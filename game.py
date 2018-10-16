@@ -4,6 +4,7 @@ from map import rooms
 from player import *
 from items import *
 from gameparser import *
+from quests import *
 import string
 
 
@@ -388,10 +389,22 @@ def move(exits, direction):
     # Next room to go to
     return rooms[exits[direction]]
 
+def quest_completed(quest):
+    """ This function will take the quest the player is on, obtain its
+    criteria and check to see whether the player has met it. If they have,
+    it will return a value to tell main game loop to move to the next quest
+    """
+
+    if quest["criteria"] == True:
+        print("Well Done! You've completed " + quest["name"] + "! \n")
+        return True
+    else:
+        return False
+
 
 def game_won():
     """ This function simply declares what to do when the player does what
-    is necessary to win the game """
+    is necessary to win the game ie current_quest = 6"""
 
     print (" You Win !!!" * 1000)
 
@@ -404,7 +417,7 @@ def main():
 
         # Display the victory condition (ie: what the player needs to do to win.)
         # victory_req is in player.py, just as it makes this loop look more tidy.
-        print("\n" + victory_req + "\n")
+        print("\n" + current_quest["name"] + "\n")
         print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
         print("This game is best played in full screen! \n")
 
@@ -412,10 +425,10 @@ def main():
         print_room(current_room)
         print_inventory_items(inventory)
 
-        # Check to see if player has done all requisite things to win:
-        if (item_laptop in rooms["Parking"]["items"]) and (item_pen in rooms["Parking"]["items"]) and (item_biscuits in rooms["Parking"]["items"]):
-            game_won()
-            break
+        # Check to see if player has done all requisite things to complete current quest
+        if quest_completed(current_quest) == True:
+            current_quest = current_quest + 1
+            main()
         
         # If there is more to do, just continue with the loop
         else:
