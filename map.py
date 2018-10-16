@@ -1,5 +1,9 @@
 from items import *
 
+"""This file is referred to by various functions in game.py to ascertain where different exits lead to
+and to enable the efficient reporting of different room names, which items are in them and the movement
+of items from those rooms into the inventory of the player in player.py"""
+
 room_reception = {
     "name": "Reception",
 

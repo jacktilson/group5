@@ -4,11 +4,14 @@ from items import *
 from gameparser import *
 import string
 
-# Setting the default quest
+# Setting the default quest, i.e. that at the start of play
 current_quest = 1
 
 # Dictionaries containing all of the quest data.
 
+
+
+# Details for the first quest
 quest_1 = {
     "id": "1",
 
@@ -31,6 +34,7 @@ quest_1 = {
 
     }
 
+# Details for the second quest
 quest_2 = {
     "id": "2",
 
@@ -55,8 +59,7 @@ quest_2 = {
     }
 
 
-
-
+# Dictionary of quest IDs referred to in game.py
 quest_numbers = {
     1: quest_1,
     2: quest_2,

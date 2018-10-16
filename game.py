@@ -14,7 +14,10 @@ import pygame
 def opening():
     """This function is called prior to main(), as such it shows its contents
     prior to the game actually starting"""
+    
+    # Clear screen
     print("\n" * 500)
+    # ASCII art to promt user to use speakers
     print(
 """
 
@@ -28,11 +31,15 @@ def opening():
 
 """
 )
+    # Hold script for 5 seconds
     time.sleep(5)
+    # Clear screen
     print("\n" * 300)
+    # Hold script for 2 seconds
     time.sleep(2)
+    # Tron welcomes player
     text_to_speech("Welcome!")
-
+    # Tron ASCII introduction
     print(
 
 """
@@ -74,13 +81,19 @@ __|     \ \                    / /     |__
 \n \n
 """
 )
+    # Hold script for 1 second.
     time.sleep(1)
+    # Tron 500 introduces itself.
     text_to_speech("My name is Tron Five Thousand. I will be your guide.")
-
+    # Hold script for 2 seconds.
     time.sleep(2)
+    # Tron hopes the player is ready for the ride of their life.
     text_to_speech("I hope you're ready for the ride of your life...")
+    # Hold script for 0.5 seconds
     time.sleep(0.5)
+    # Clear screen
     print("\n" * 300)
+    # ASCII art of "This"
     print("""
 
 ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
@@ -97,9 +110,13 @@ __|     \ \                    / /     |__
                                                     
 """
 )
+    # Tron says "this"
     text_to_speech("This")
+    # Create a little room below
     print("\n" * 5)
+    # Hold the script for 0.5 seconds.
     time.sleep(0.5)
+    # ASCII art of "Is"
     print("""
 
 ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
@@ -115,9 +132,13 @@ __|     \ \                    / /     |__
 ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀ 
                           
 """)
+    # Tron says "is"
     text_to_speech("Iz")
+    # Clear screen
     print("\n" * 300)
+    # Hold the script for 0.5 seconds
     time.sleep(0.5)
+    # Print Tea Boy ASCII art
     print(
     
 
@@ -142,9 +163,13 @@ __|     \ \                    / /     |__
 \n \n
 """
 )
+    # Tron says "Tea Boy"
     text_to_speech("Tea Boy")
+    # Hold the script for 2 seconds
     time.sleep(2)
+    # Clear screen
     print("\n" * 300)
+    # Reprint Tea Boy ASCII art
     print(
     
 
@@ -171,7 +196,7 @@ __|     \ \                    / /     |__
 
 
 )
-
+    # Supplement the above with a Loading Game art whilst Tron talks.
     print(
 """
 
@@ -192,12 +217,19 @@ __|     \ \                    / /     |__
                                                                                                
 """
 )
+    # Hold the script for 1 second
     time.sleep(1)
+    # Tron warns this ain't no game
     text_to_speech("This ain't no game. This is reality for apprentices... up and down the country... You're lucky you came to University.")
+    # Hold script for 2 seconds
     time.sleep(2)
+    # Tron details the first quest
     text_to_speech("Its time for your very first quest... It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+    # Hold the script for 1 second
     time.sleep(1)
+    # Tron tells apprentice to get going
     text_to_speech("Now off you go, apprentice.")
+    # Clear screen
     print("\n" * 300)
 
     return

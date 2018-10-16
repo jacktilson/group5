@@ -1,3 +1,8 @@
+""" This file comprises of a series of dictionaries which are in effect, items for the user
+to pick up or drop. They are particularly useful as mission objectives, ie dropping a certain
+item in a certain room, and checking to see if that item is in the current_room["items"] value"""
+
+
 item_id = {
     "id": "id",
 
