@@ -403,7 +403,7 @@ def quest_completed(quest):
         return True
     else:
         return False
-
+    #;
 
 def game_won():
     """ This function simply declares what to do when the player does what
