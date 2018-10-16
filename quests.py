@@ -37,9 +37,6 @@ quest_2 = {
 
 
 quest_numbers = {
-    "1": quest_1,
-    "2": quest_2,
-    "3": quest_3,
-    "4": quest_4,
-    "5": quest_5
+    1: quest_1,
+    2: quest_2,
 }

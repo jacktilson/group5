@@ -253,14 +253,13 @@ def execute_take(item_id):
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
-    
     weight_carried = 0
     for item in inventory:
         weight_carried = weight_carried + item["mass"]
 
     # Checking that what the player is already carrying plus what they're about to pick
     # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
- 
+    print(inventory)
     if weight_carried + eval("item_" + item_id)["mass"] <= max_weight_allowed:
         
         # If the item is indeed in the current room, make the move.
@@ -274,8 +273,9 @@ def execute_take(item_id):
 
             else:
                 print("You cannot take that.")
+                print(inventory)
                 break
-            
+        print(inventory)            
         # Add in the additional weight that the player is now carrying.
         for x in inventory:
             weight_carried = weight_carried + x["mass"]
@@ -292,7 +292,7 @@ def execute_drop(item_id):
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
-    
+    global inventory
     weight_carried = 0
     for item in inventory:
         weight_carried = weight_carried + item["mass"]
@@ -303,6 +303,8 @@ def execute_drop(item_id):
         if item_id in i["id"]:
             current_room["items"].append(i)
             inventory.remove(i)
+            print(inventory)
+            break
 
         # If that item actually is not in the inventory, advise player.
 
@@ -395,7 +397,7 @@ def quest_completed(quest):
     it will return a value to tell main game loop to move to the next quest
     """
 
-    if quest["criteria"] == True:
+    if quest_numbers[quest]["criteria"] == True:
         print("Well Done! You've completed " + quest["name"] + "! \n")
         return True
     else:
@@ -417,7 +419,8 @@ def main():
 
         # Display the victory condition (ie: what the player needs to do to win.)
         # victory_req is in player.py, just as it makes this loop look more tidy.
-        print("\n" + current_quest["name"] + "\n")
+        global current_quest
+        print("\n" + quest_numbers[current_quest]["name"] + "\n")
         print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
         print("This game is best played in full screen! \n")
 
@@ -425,19 +428,21 @@ def main():
         print_room(current_room)
         print_inventory_items(inventory)
 
+        # Show the menu with possible actions and ask the player
+        command = menu(current_room["exits"], current_room["items"], inventory)
+
+        # Execute the player's command
+        execute_command(command)
+
         # Check to see if player has done all requisite things to complete current quest
         if quest_completed(current_quest) == True:
             current_quest = current_quest + 1
-            main()
+            pass
         
         # If there is more to do, just continue with the loop
         else:
-            # Show the menu with possible actions and ask the player
-            command = menu(current_room["exits"], current_room["items"], inventory)
-
-            # Execute the player's command
-            execute_command(command)
-
+            pass
+        
 
 # Are we being run as a script? If so, run main().
 # '__main__' is the name of the scope in which top-level code executes.
