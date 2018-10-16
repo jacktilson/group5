@@ -1,5 +1,7 @@
 # This file is automatically imported into game.py and executes itself.
 
-import vlc
-p = vlc.MediaPlayer("ambient1hr.mp3")
-p.play()
+import pygame
+pygame.mixer.init()
+pygame.mixer.music.load("adventure1hr.mp3")
+pygame.mixer.music.set_volume(1)
+pygame.mixer.music.play()

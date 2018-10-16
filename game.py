@@ -7,7 +7,200 @@ from gameparser import *
 from quests import *
 import string
 import music
+import pyttsx3
+import time
+import pygame
 
+def opening():
+    """This function is called prior to main(), as such it shows its contents
+    prior to the game actually starting"""
+    print("\n" * 500)
+    print(
+"""
+
+████████╗██╗   ██╗██████╗ ███╗   ██╗     ██████╗ ███╗   ██╗    ██╗   ██╗ ██████╗ ██╗   ██╗██████╗     ███████╗██████╗ ███████╗ █████╗ ██╗  ██╗███████╗██████╗ ███████╗██╗
+╚══██╔══╝██║   ██║██╔══██╗████╗  ██║    ██╔═══██╗████╗  ██║    ╚██╗ ██╔╝██╔═══██╗██║   ██║██╔══██╗    ██╔════╝██╔══██╗██╔════╝██╔══██╗██║ ██╔╝██╔════╝██╔══██╗██╔════╝██║
+   ██║   ██║   ██║██████╔╝██╔██╗ ██║    ██║   ██║██╔██╗ ██║     ╚████╔╝ ██║   ██║██║   ██║██████╔╝    ███████╗██████╔╝█████╗  ███████║█████╔╝ █████╗  ██████╔╝███████╗██║
+   ██║   ██║   ██║██╔══██╗██║╚██╗██║    ██║   ██║██║╚██╗██║      ╚██╔╝  ██║   ██║██║   ██║██╔══██╗    ╚════██║██╔═══╝ ██╔══╝  ██╔══██║██╔═██╗ ██╔══╝  ██╔══██╗╚════██║╚═╝
+   ██║   ╚██████╔╝██║  ██║██║ ╚████║    ╚██████╔╝██║ ╚████║       ██║   ╚██████╔╝╚██████╔╝██║  ██║    ███████║██║     ███████╗██║  ██║██║  ██╗███████╗██║  ██║███████║██╗
+   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝     ╚═════╝ ╚═╝  ╚═══╝       ╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝    ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚═╝
+                                                                                                                                                                         
+
+"""
+)
+    time.sleep(5)
+    print("\n" * 300)
+    time.sleep(2)
+    text_to_speech("Welcome!")
+
+    print(
+
+"""
+████████╗██████╗  ██████╗ ███╗   ██╗    ███████╗ ██████╗  ██████╗  ██████╗ 
+╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║    ██╔════╝██╔═████╗██╔═████╗██╔═████╗
+   ██║   ██████╔╝██║   ██║██╔██╗ ██║    ███████╗██║██╔██║██║██╔██║██║██╔██║
+   ██║   ██╔══██╗██║   ██║██║╚██╗██║    ╚════██║████╔╝██║████╔╝██║████╔╝██║
+   ██║   ██║  ██║╚██████╔╝██║ ╚████║    ███████║╚██████╔╝╚██████╔╝╚██████╔╝
+   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝    ╚══════╝ ╚═════╝  ╚═════╝  ╚═════╝ 
+                                                                                  
+                __________
+            ______/ ________ \______
+        _/      ____________      \_
+        _/____________    ____________\_
+    /  ___________ \  / ___________  \
+    /  /           \ \/ /            \  \
+    /  /            /    \            \  \                
+    |  \           / _  _ \           /  |
+__|\_____   ___   //  \\   ___   _____/|__
+[_       \     \  X    X  /     /       _]
+__|     \ \                    / /     |__
+[____  \ \ \   ____________   / / /  ____]
+    \  \ \ \/||.||.||.||.||\/ / /  /
+    \_ \ \  ||.||.||.||.||  / / _/
+        \ \   ||.||.||.||.||   / /
+        \_   ||_||_||_||_||   _/
+            \     ........     /
+            \________________/
+
+
+
+██╗   ██╗ ██████╗ ██╗   ██╗██████╗      ██████╗ ██╗      █████╗ ███╗   ███╗ ██████╗ ██████╗  ██████╗ ██╗   ██╗███████╗     █████╗ ███████╗███████╗██╗███████╗████████╗ █████╗ ███╗   ██╗████████╗
+╚██╗ ██╔╝██╔═══██╗██║   ██║██╔══██╗    ██╔════╝ ██║     ██╔══██╗████╗ ████║██╔═══██╗██╔══██╗██╔═══██╗██║   ██║██╔════╝    ██╔══██╗██╔════╝██╔════╝██║██╔════╝╚══██╔══╝██╔══██╗████╗  ██║╚══██╔══╝
+╚████╔╝ ██║   ██║██║   ██║██████╔╝    ██║  ███╗██║     ███████║██╔████╔██║██║   ██║██████╔╝██║   ██║██║   ██║███████╗    ███████║███████╗███████╗██║███████╗   ██║   ███████║██╔██╗ ██║   ██║   
+╚██╔╝  ██║   ██║██║   ██║██╔══██╗    ██║   ██║██║     ██╔══██║██║╚██╔╝██║██║   ██║██╔══██╗██║   ██║██║   ██║╚════██║    ██╔══██║╚════██║╚════██║██║╚════██║   ██║   ██╔══██║██║╚██╗██║   ██║   
+██║   ╚██████╔╝╚██████╔╝██║  ██║    ╚██████╔╝███████╗██║  ██║██║ ╚═╝ ██║╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝███████║    ██║  ██║███████║███████║██║███████║   ██║   ██║  ██║██║ ╚████║   ██║   
+╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝     ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚══════╝    ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝   
+
+\n \n
+"""
+)
+    time.sleep(1)
+    text_to_speech("My name is Tron Five Thousand. I will be your guide.")
+
+    time.sleep(2)
+    text_to_speech("I hope you're ready for the ride of your life...")
+    time.sleep(0.5)
+    print("\n" * 300)
+    print("""
+
+▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
+▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+▀▀▀▀█░█▀▀▀▀ ▐░▌       ▐░▌ ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀ 
+    ▐░▌     ▐░▌       ▐░▌     ▐░▌     ▐░▌          
+    ▐░▌     ▐░█▄▄▄▄▄▄▄█░▌     ▐░▌     ▐░█▄▄▄▄▄▄▄▄▄ 
+    ▐░▌     ▐░░░░░░░░░░░▌     ▐░▌     ▐░░░░░░░░░░░▌
+    ▐░▌     ▐░█▀▀▀▀▀▀▀█░▌     ▐░▌      ▀▀▀▀▀▀▀▀▀█░▌
+    ▐░▌     ▐░▌       ▐░▌     ▐░▌               ▐░▌
+    ▐░▌     ▐░▌       ▐░▌ ▄▄▄▄█░█▄▄▄▄  ▄▄▄▄▄▄▄▄▄█░▌
+    ▐░▌     ▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+    ▀       ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀ 
+                                                    
+"""
+)
+    text_to_speech("This")
+    print("\n" * 5)
+    time.sleep(0.5)
+    print("""
+
+▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
+▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀ 
+    ▐░▌     ▐░▌          
+    ▐░▌     ▐░█▄▄▄▄▄▄▄▄▄ 
+    ▐░▌     ▐░░░░░░░░░░░▌
+    ▐░▌      ▀▀▀▀▀▀▀▀▀█░▌
+    ▐░▌               ▐░▌
+▄▄▄▄█░█▄▄▄▄  ▄▄▄▄▄▄▄▄▄█░▌
+▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀ 
+                          
+""")
+    text_to_speech("Iz")
+    print("\n" * 300)
+    time.sleep(0.5)
+    print(
+    
+
+"""
+
+
+
+
+.----------------.  .----------------.  .----------------.           .----------------.  .----------------.  .----------------. 
+| .--------------. || .--------------. || .--------------. |         | .--------------. || .--------------. || .--------------. |
+| |  _________   | || |  _________   | || |      __      | |         | |   ______     | || |     ____     | || |  ____  ____  | |
+| | |  _   _  |  | || | |_   ___  |  | || |     /  \     | |         | |  |_   _ \    | || |   .'    `.   | || | |_  _||_  _| | |
+| | |_/ | | \_|  | || |   | |_  \_|  | || |    / /\ \    | |         | |    | |_) |   | || |  /  .--.  \  | || |   \ \  / /   | |
+| |     | |      | || |   |  _|  _   | || |   / ____ \   | |         | |    |  __'.   | || |  | |    | |  | || |    \ \/ /    | |
+| |    _| |_     | || |  _| |___/ |  | || | _/ /    \ \_ | |         | |   _| |__) |  | || |  \  `--'  /  | || |    _|  |_    | |
+| |   |_____|    | || | |_________|  | || ||____|  |____|| |         | |  |_______/   | || |   `.____.'   | || |   |______|   | |
+| |              | || |              | || |              | |         | |              | || |              | || |              | |
+| '--------------' || '--------------' || '--------------' |         | '--------------' || '--------------' || '--------------' |
+'----------------'  '----------------'  '----------------'           '----------------'  '----------------'  '----------------' 
+
+
+\n \n
+"""
+)
+    text_to_speech("Tea Boy")
+    time.sleep(2)
+    print("\n" * 300)
+    print(
+    
+
+"""
+
+
+
+
+.----------------.  .----------------.  .----------------.           .----------------.  .----------------.  .----------------. 
+| .--------------. || .--------------. || .--------------. |         | .--------------. || .--------------. || .--------------. |
+| |  _________   | || |  _________   | || |      __      | |         | |   ______     | || |     ____     | || |  ____  ____  | |
+| | |  _   _  |  | || | |_   ___  |  | || |     /  \     | |         | |  |_   _ \    | || |   .'    `.   | || | |_  _||_  _| | |
+| | |_/ | | \_|  | || |   | |_  \_|  | || |    / /\ \    | |         | |    | |_) |   | || |  /  .--.  \  | || |   \ \  / /   | |
+| |     | |      | || |   |  _|  _   | || |   / ____ \   | |         | |    |  __'.   | || |  | |    | |  | || |    \ \/ /    | |
+| |    _| |_     | || |  _| |___/ |  | || | _/ /    \ \_ | |         | |   _| |__) |  | || |  \  `--'  /  | || |    _|  |_    | |
+| |   |_____|    | || | |_________|  | || ||____|  |____|| |         | |  |_______/   | || |   `.____.'   | || |   |______|   | |
+| |              | || |              | || |              | |         | |              | || |              | || |              | |
+| '--------------' || '--------------' || '--------------' |         | '--------------' || '--------------' || '--------------' |
+'----------------'  '----------------'  '----------------'           '----------------'  '----------------'  '----------------' 
+
+
+\n \n
+"""
+
+
+)
+
+    print(
+"""
+
+
+▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄        ▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄          
+▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌      ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌         
+▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▀▀▀▀█░█▀▀▀▀ ▐░▌░▌     ▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀          
+▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌    ▐░▌     ▐░▌▐░▌    ▐░▌▐░▌               ▐░▌          ▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌                   
+▐░▌          ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌    ▐░▌     ▐░▌ ▐░▌   ▐░▌▐░▌ ▄▄▄▄▄▄▄▄      ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄          
+▐░▌          ▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌    ▐░▌     ▐░▌  ▐░▌  ▐░▌▐░▌▐░░░░░░░░▌     ▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌         
+▐░▌          ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌       ▐░▌    ▐░▌     ▐░▌   ▐░▌ ▐░▌▐░▌ ▀▀▀▀▀▀█░▌     ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀          
+▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌    ▐░▌     ▐░▌    ▐░▌▐░▌▐░▌       ▐░▌     ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░▌                   
+▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌▄▄▄▄█░█▄▄▄▄ ▐░▌     ▐░▐░▌▐░█▄▄▄▄▄▄▄█░▌     ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄  ▄  ▄  ▄ 
+▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌      ▐░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌▐░▌▐░▌
+▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀        ▀▀  ▀▀▀▀▀▀▀▀▀▀▀       ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀  ▀  ▀ 
+                                                                                                                                                            
+
+                                                                                               
+"""
+)
+    time.sleep(1)
+    text_to_speech("This ain't no game. This is reality for apprentices... up and down the country... You're lucky you came to University.")
+    time.sleep(2)
+    text_to_speech("Its time for your very first quest... It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+    time.sleep(1)
+    text_to_speech("Now off you go, apprentice.")
+    print("\n" * 300)
+
+    return
 
 
 def list_of_items(items):
@@ -60,6 +253,7 @@ def print_room_items(room):
     """
     if len(room["items"]) > 0:
         print("There is " + list_of_items(room["items"]) + " here." + "\n")
+        return
     else:
         # Do nothing.
         pass
@@ -125,6 +319,18 @@ def print_room(room):
     """
     # Display room name
     print()
+    print(
+"""
+        _,--',   _._.--._____
+ .--.--';_'-.', ";_      _.,-'
+.'--'.  _.'    {`'-;_ .-.>.'
+      '-:_      )  / `' '=.
+        ) >     {_/,     /~)
+        |/               `^ .'
+
+
+""")
+    print()
     print(room["name"].upper())
     print()
     # Display room description
@@ -132,6 +338,7 @@ def print_room(room):
     print()
     # Print the items in the room
     print_room_items(room)
+    return
 
 def exit_leads_to(exits, direction):
     """This function takes a dictionary of exits and a direction (a particular
@@ -241,8 +448,11 @@ def execute_go(direction):
     global current_room
     if is_valid_exit(current_room["exits"], direction) == True:
         current_room = move(current_room["exits"], direction)
+        print(current_room["entry_art"])
+        text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"])
     else:
         print("You cannot go there.")
+        text_to_speech("Sorry, but you can't go there.")
 
 def execute_take(item_ref):
     """This function takes an item_id as an argument and moves this item from the
@@ -273,17 +483,19 @@ def execute_take(item_ref):
 
                 # Add in the additional weight that the player is now carrying.
                 weight_carried = weight_carried + eval("item_" + item_ref)["mass"]
-                
+                text_to_speech("You've picked up " + eval("item_" + item_ref)["name"] + " .")
                 return
 
         # If that item actually is not in the current room, advise player.
         print("You cannot take that.")
+        text_to_speech("Sorry, but you can't take that.")
 
 
 
     # If the player is carrying too much, or will be after they pick up their chosen object, advise.
     else:
         print ("You're carrying too much stuff! You've got to drop something...")
+        text_to_speech("Sorry; you're not quite strong enough to lift that... You need to drop something.")
 
 
 
@@ -309,12 +521,16 @@ def execute_drop(item_ref):
             # Take off the additional weight that the player just dropped.
 
             weight_carried = weight_carried - eval("item_" + item_ref)["mass"]
+
+            # Narrate what just happened
+            text_to_speech("You've just dropped " + eval("item_" + item_ref)["name"] + " .")
             
             return
 
     # If that item actually is not in the inventory, advise player.
 
     print("You cannot drop that.")
+
 
 
  
@@ -393,6 +609,18 @@ def move(exits, direction):
     # Next room to go to
     return rooms[exits[direction]]
 
+def text_to_speech(msg):
+    """This function takes an argument, msg, and speaks what it says"""
+    # Reduce voulme of music
+    pygame.mixer.music.set_volume(0.1)
+    engine = pyttsx3.init()
+    engine.say(str(msg))
+    engine.setProperty('rate',80)  #120 words per minute
+    engine.setProperty('volume',0.9) 
+    engine.runAndWait()
+    # Return volume of music to default
+    pygame.mixer.music.set_volume(1)
+
 def quest_completed(quest):
     """ This function will take the quest the player is on, obtain its
     criteria and check to see whether the player has met it. If they have,
@@ -401,6 +629,10 @@ def quest_completed(quest):
 
     if eval(quest_numbers[quest]["criteria"]):
         print("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "! \n")
+        text_to_speech("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "!")
+        time.sleep(3)
+        global current_quest
+        current_quest = current_quest + 1
         return True
     else:
         return False
@@ -418,17 +650,21 @@ def main():
     # Main game loop
     while True:
 
-        # Display the victory condition (ie: what the player needs to do to win.)
-        # victory_req is in player.py, just as it makes this loop look more tidy.
+       
 
         global current_quest
-        print("\n" + str(quest_numbers[current_quest]["name"]) + "\n")
+        print("Your current quest is:")
+        print("\n" + str(quest_numbers[current_quest]["name_art"]) + "\n")
+        print(str(quest_numbers[current_quest]["description"]) + "\n")
         print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
         print("This game is best played in full screen! \n")
 
-        # Display game status (room description, inventory etc.)
+        # Display game status (room description, inventory etc.) and narrate the name and description
         print_room(current_room)
         print_inventory_items(inventory)
+
+        # Narration prompt for the user to select a choice
+        text_to_speech("What would you like to do next?")
 
         # Show the menu with possible actions and ask the player
         command = menu(current_room["exits"], current_room["items"], inventory)
@@ -438,12 +674,18 @@ def main():
 
         # Check to see if player has done all requisite things to complete current quest
         if quest_completed(current_quest) == True:
-            current_quest = current_quest + 1
+            text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+
         
         # If there is more to do, just continue with the loop
-        else:
-            print("Quest not yet done!!")
+
+        # Clearing contents of screen
+        print("\n" * 300)
         
+
+
+# Before we jump into the main loop, we need to introduce the player.
+opening()
 
 # Are we being run as a script? If so, run main().
 # '__main__' is the name of the scope in which top-level code executes.
