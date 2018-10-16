@@ -7,7 +7,7 @@ import string
 # Setting the default quest
 current_quest = 1
 
-# Dictionaries containing all of the quest data
+# Dictionaries containing all of the quest data.
 
 quest_1 = {
     "id": "1",
