@@ -6,6 +6,7 @@ from items import *
 from gameparser import *
 from quests import *
 import string
+import music
 
 
 
@@ -403,7 +404,6 @@ def quest_completed(quest):
         return True
     else:
         return False
-    #;
 
 def game_won():
     """ This function simply declares what to do when the player does what
@@ -420,6 +420,7 @@ def main():
 
         # Display the victory condition (ie: what the player needs to do to win.)
         # victory_req is in player.py, just as it makes this loop look more tidy.
+
         global current_quest
         print("\n" + str(quest_numbers[current_quest]["name"]) + "\n")
         print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")

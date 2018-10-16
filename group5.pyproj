@@ -23,7 +23,11 @@
     <Compile Include="gameparser.py" />
     <Compile Include="items.py" />
     <Compile Include="map.py" />
+    <Compile Include="music.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="player.py" />
+    <Compile Include="quests.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
 </Project>
