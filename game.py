@@ -243,7 +243,7 @@ def execute_go(direction):
     else:
         print("You cannot go there.")
 
-def execute_take(item_id):
+def execute_take(item_ref):
     """This function takes an item_id as an argument and moves this item from the
     list of items in the current room to the player's inventory. However, if
     there is no such item in the room, this function prints "You cannot take that." 
@@ -253,46 +253,47 @@ def execute_take(item_id):
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
+    global inventory
     weight_carried = 0
     for item in inventory:
         weight_carried = weight_carried + item["mass"]
 
     # Checking that what the player is already carrying plus what they're about to pick
     # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
-    print(inventory)
-    if weight_carried + eval("item_" + item_id)["mass"] <= max_weight_allowed:
+
+    if weight_carried + eval("item_" + item_ref)["mass"] <= max_weight_allowed:
         
         # If the item is indeed in the current room, make the move.
 
         for c in current_room["items"]:
-            if item_id in c["id"]:
+            if item_ref == c["id"]:
                 inventory.append(c)
                 current_room["items"].remove(c)
 
-             # If that item actually is not in the current room, advise player.
+                # Add in the additional weight that the player is now carrying.
+                weight_carried = weight_carried + eval("item_" + item_ref)["mass"]
+                
+                return
 
-            else:
-                print("You cannot take that.")
-                print(inventory)
-                break
-        print(inventory)            
-        # Add in the additional weight that the player is now carrying.
-        for x in inventory:
-            weight_carried = weight_carried + x["mass"]
+        # If that item actually is not in the current room, advise player.
+        print("You cannot take that.")
+
+
 
     # If the player is carrying too much, or will be after they pick up their chosen object, advise.
     else:
         print ("You're carrying too much stuff! You've got to drop something...")
 
 
-def execute_drop(item_id):
+
+def execute_drop(item_ref):
     """This function takes an item_id as an argument and moves this item from the
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
-    global inventory
+
     weight_carried = 0
     for item in inventory:
         weight_carried = weight_carried + item["mass"]
@@ -300,22 +301,22 @@ def execute_drop(item_id):
     # If the item is indeed in the inventory, make the drop.
 
     for i in inventory:
-        if item_id in i["id"]:
+        if item_ref in i["id"]:
             current_room["items"].append(i)
             inventory.remove(i)
-            print(inventory)
-            break
 
-        # If that item actually is not in the inventory, advise player.
+            # Take off the additional weight that the player just dropped.
 
-        else:
-            print("You cannot drop that.")
-            break
+            weight_carried = weight_carried - eval("item_" + item_ref)["mass"]
+            
+            return
 
-    # Take off the additional weight that the player just dropped.
+    # If that item actually is not in the inventory, advise player.
 
-    for x in inventory:
-        weight_carried = weight_carried - x["mass"]
+    print("You cannot drop that.")
+
+
+ 
 
 
 
@@ -397,8 +398,8 @@ def quest_completed(quest):
     it will return a value to tell main game loop to move to the next quest
     """
 
-    if quest_numbers[quest]["criteria"] == True:
-        print("Well Done! You've completed " + quest["name"] + "! \n")
+    if eval(quest_numbers[quest]["criteria"]):
+        print("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "! \n")
         return True
     else:
         return False
@@ -420,7 +421,7 @@ def main():
         # Display the victory condition (ie: what the player needs to do to win.)
         # victory_req is in player.py, just as it makes this loop look more tidy.
         global current_quest
-        print("\n" + quest_numbers[current_quest]["name"] + "\n")
+        print("\n" + str(quest_numbers[current_quest]["name"]) + "\n")
         print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
         print("This game is best played in full screen! \n")
 
@@ -437,11 +438,10 @@ def main():
         # Check to see if player has done all requisite things to complete current quest
         if quest_completed(current_quest) == True:
             current_quest = current_quest + 1
-            pass
         
         # If there is more to do, just continue with the loop
         else:
-            pass
+            print("Quest not yet done!!")
         
 
 # Are we being run as a script? If so, run main().

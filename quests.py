@@ -1,3 +1,9 @@
+from map import rooms
+from player import *
+from items import *
+from gameparser import *
+import string
+
 # Setting the default quest
 current_quest = 1
 
@@ -10,11 +16,7 @@ quest_1 = {
 
     "description": "Help MJ and Simon move offices.",
 
-    "criteria": 
-    
-    """
-    (item_laptop in rooms["Parking"]["items"]) and (item_pen in rooms["Parking"]["items"]) and (item_biscuits in rooms["Parking"]["items"])    
-    """,
+    "criteria": """(item_laptop in rooms["Parking"]["items"])""",
 
     }
 
@@ -25,11 +27,7 @@ quest_2 = {
 
     "description": "Its time for you to drop off the handbook at the office",
 
-    "criteria": 
-    
-    """
-    (item_handbook in rooms["Office"]["items"]
-    """,
+    "criteria": """(item_handbook in rooms["Office"]["items"])""",
 
     }
 
