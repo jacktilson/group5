@@ -13,7 +13,7 @@ import time
 import pygame
 
 def opening():
-    """This function is called prior to main(), as such it shows its contents
+    """This function is called prior to the game loop, as such it shows its contents
     prior to the game actually starting"""
     
     # Clear screen
@@ -44,7 +44,7 @@ def opening():
     text_to_speech("Welcome!")
     # Tron ASCII introduction
     print(
-
+# Double backslash must be properly escaped in TRON 5000's nose
 "\n" \
 "████████╗██████╗  ██████╗ ███╗   ██╗    ███████╗ ██████╗  ██████╗  ██████╗  \n" \
 "╚══██╔══╝██╔══██╗██╔═══██╗████╗  ██║    ██╔════╝██╔═████╗██╔═████╗██╔═████╗ \n" \
@@ -61,7 +61,7 @@ def opening():
 "   /  /           \ \/ /           \  \    \n" \
 "  /  /            /    \            \  \   \n" \
 "  |  \           / _  _ \           /  |   \n" \
-"__|\_____   ___   //  \\   ___   _____/|__ \n" \
+"__|\_____   ___   //  \\\\   ___   _____/|__ \n" \
 "[_       \     \  X    X  /     /       _] \n" \
 "__|     \ \                    / /     |__ \n" \
 "[____  \ \ \   ____________   / / /  ____] \n" \
@@ -479,11 +479,22 @@ def execute_go(direction):
     """
     global current_room
     if is_valid_exit(current_room["exits"], direction) == True:
-        current_room = move(current_room["exits"], direction)
-        print(current_room["entry_art"])
-        # Set current song playing according to room
-        set_song(current_room["song"])
-        text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+        destination_room = move(current_room["exits"], direction)
+        if current_quest >= destination_room["required_current_quest_min"]:
+            # Check through all required items - if we're missing one, we can't enter.
+            for required_item in destination_room["required_items"]:
+                if required_item not in inventory:
+                    print("You need to bring something else to enter " + current_room["name"] + ".")
+                    text_to_speech("You're not carrying the right thing. Go get it!")
+                    return
+            current_room = destination_room
+            print(current_room["entry_art"])
+            # Set current song playing according to room
+            set_song(current_room["song"])
+            text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+        else:
+            print("You need to complete a quest to enter " + current_room["name"] + ".")
+            text_to_speech("You know what you're paid to do. Go and do it!")
     else:
         print("You cannot go there.")
         text_to_speech("Sorry, but you can't go there.")
@@ -645,8 +656,8 @@ def move(exits, direction):
 
 def text_to_speech(msg):
     """This function takes an argument, msg, and speaks what it says"""
-    # Reduce voulme of music
-    pygame.mixer.music.set_volume(0.1)
+    # Reduce volume of music
+    pygame.mixer.music.set_volume(0.33)
     engine = pyttsx3.init()
     engine.setProperty('rate',180)  #180 words per minute
     engine.setProperty('volume',0.9) 

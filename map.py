@@ -27,7 +27,11 @@ teach you how to open a door... Please.""",
 " | |___  | | | | | |_  |  __/ | |    | | | | | | | (_| |   | |_| | | |_| | | |_  \__ \ | | | (_| | |  __/  _   _   _  \n" \
 " |_____| |_| |_|  \__|  \___| |_|    |_| |_| |_|  \__, |    \___/   \__,_|  \__| |___/ |_|  \__,_|  \___| (_) (_) (_) \n" \
 "                                                  |___/                                                               \n" \
-"\n"
+"\n",
+
+    "required_items": [],
+
+    "required_current_quest_min": 1
 }
 
 
@@ -55,7 +59,11 @@ Same thing... Right?""",
 " | |___  | | | | | |_  |  __/ | |    | | | | | | | (_| |   | |  | | | (_| | | | | | | |   | |_| | |  _| |  _| | | | (__  |  __/  _   _   _  \n" \
 " |_____| |_| |_|  \__|  \___| |_|    |_| |_| |_|  \__, |   |_|  |_|  \__,_| |_| |_| |_|    \___/  |_|   |_|   |_|  \___|  \___| (_) (_) (_) \n" \
 "                                                  |___/                                                                                     \n" \
-"\n"
+"\n",
+
+    "required_items": [],
+
+    "required_current_quest_min": 1
 }
 
 room_kitchen = {
@@ -81,7 +89,11 @@ the tea...""",
 " | |___  | | | | | |_  |  __/ | |    | | | | | | | (_| |   | . \  | | | |_  | (__  | | | | |  __/ | | | |  _   _   _  \n" \
 " |_____| |_| |_|  \__|  \___| |_|    |_| |_| |_|  \__, |   |_|\_\ |_|  \__|  \___| |_| |_|  \___| |_| |_| (_) (_) (_) \n" \
 "                                                  |___/                                                               \n" \
-"\n"
+"\n",
+
+    "required_items": [],
+
+    "required_current_quest_min": 2
 }
 
 room_security = {
@@ -89,12 +101,12 @@ room_security = {
 
     "description":
     """There is a guy who seems to be half asleep in the corner.
-    There's also a giant hammer in the corner. It looks pretty heavy.
-    Perhaps you might need that for something... someday.""",
+There's also a giant hammer in the corner. It looks pretty heavy.
+Perhaps you might need that for something... someday.""",
 
     "exits": {"west": "Main", "south": "Kirill"},
 
-    "items": [],
+    "items": [item_id, item_hammer],
 
     "song": "security.mp3",
 
@@ -107,7 +119,11 @@ room_security = {
 " | |___  | | | | | |_  |  __/ | |    | | | | | | | (_| |    ___) | |  __/ | (__  | |_| | | |    | | | |_  | |_| |    ___) | | |_| | | | | |_  |  __/  _   _   _  \n" \
 " |_____| |_| |_|  \__|  \___| |_|    |_| |_| |_|  \__, |   |____/   \___|  \___|  \__,_| |_|    |_|  \__|  \__, |   |____/   \__,_| |_|  \__|  \___| (_) (_) (_) \n" \
 "                                                  |___/                                                    |___/                                                 \n" \
-"\n"
+"\n",
+
+    "required_items": [],
+
+    "required_current_quest_min": 1
 }
 
 room_spoons = {
@@ -116,8 +132,9 @@ room_spoons = {
     "description":
     """You've just walked in and can see Jing, that other lecturer, sat down near
 the window. She says that Kirill had started taking up singing lessons down in
-the opera house... Perhaps we should check there. She asks you to buy her a drink.
-You refuse... Because there is much more important business at hand.""",
+the Opera House... Perhaps we should check there. She asks you to buy her a drink.
+You refuse... Because there is much more important business at hand. A mysterious
+door with "Pandora's Box" written on it catches your eye. Perhaps it's important?""",
 
     "exits": {"east": "Main", "south": "Opera", "north": "Pandora"},
 
@@ -134,7 +151,11 @@ You refuse... Because there is much more important business at hand.""",
 " | |___  | | | | | |_  |  __/ | |    | | | | | | | (_| |    ___) | | |_) | | (_) | | (_) | | | | | \__ \    _   | | \n" \
 " |_____| |_| |_|  \__|  \___| |_|    |_| |_| |_|  \__, |   |____/  | .__/   \___/   \___/  |_| |_| |___/   ( )  | | \n" \
 "                                                  |___/            |_|                                     |/  /_/  \n" \
-"\n"
+"\n",
+
+    "required_items": [],
+
+    "required_current_quest_min": 3
 }
 
 room_opera = {
@@ -147,7 +168,7 @@ You take a closer look, but clearly this isn't the guy you're looking for.""",
 
     "exits": {"north": "Spoons"},
 
-    "items": [item_pen],
+    "items": [],
 
     "song": "opera.mp3",
 
@@ -160,7 +181,11 @@ You take a closer look, but clearly this isn't the guy you're looking for.""",
 " | |___  | | | | | |_  |  __/ | |    | | | | | | | (_| |   | |_| | | |_) | |  __/ | |    | (_| |   |  _  | | (_) | | |_| | \__ \ |  __/  _   _   _  \n" \
 " |_____| |_| |_|  \__|  \___| |_|    |_| |_| |_|  \__, |    \___/  | .__/   \___| |_|     \__,_|   |_| |_|  \___/   \__,_| |___/  \___| (_) (_) (_) \n" \
 "                                                  |___/            |_|                                                                              \n" \
-"\n"
+"\n",
+
+    "required_items": [],
+
+    "required_current_quest_min": 3
 }
 
 room_pandora = {
@@ -168,12 +193,12 @@ room_pandora = {
 
     "description":
     """You enter a dark room. You hear a roaring sound coming from the far
- corner of the room, followed by a mighty grunt. Suddenly, the light comes
- on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
+corner of the room, followed by a mighty grunt. Suddenly, the light comes
+on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
 
     "exits": {"south": "Spoons", "east": "Kitchen"},
 
-    "items": [item_pen],
+    "items": [],
 
     "song": "pandora.mp3",
 
@@ -186,7 +211,11 @@ room_pandora = {
 "██╔══╝  ██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗██║██║╚██╗██║██║   ██║    ██╔═══╝ ██╔══██║██║╚██╗██║██║  ██║██║   ██║██╔══██╗██╔══██║╚════██║    ██╔══██╗██║   ██║ ██╔██╗  \n" \
 "███████╗██║ ╚████║   ██║   ███████╗██║  ██║██║██║ ╚████║╚██████╔╝    ██║     ██║  ██║██║ ╚████║██████╔╝╚██████╔╝██║  ██║██║  ██║███████║    ██████╔╝╚██████╔╝██╔╝ ██╗ \n" \
 "╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝     ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ \n" \
-"\n"
+"\n",
+
+    "required_items": [item_hammer],
+
+    "required_current_quest_min": 5
 }
 
 room_kirill = {
@@ -212,7 +241,11 @@ to drink the tea you just made is the model Linux penguin in the corner.""",
 " | |___  | | | | | |_  |  __/ | |    | | | | | | | (_| |   | . \  | | | |    | | | | | |     \__ \   | |_| | |  _| |  _| | | | (__  |  __/  _   _   _  \n" \
 " |_____| |_| |_|  \__|  \___| |_|    |_| |_| |_|  \__, |   |_|\_\ |_| |_|    |_| |_| |_|     |___/    \___/  |_|   |_|   |_|  \___|  \___| (_) (_) (_) \n" \
 "                                                  |___/                                                                                                \n" \
-"\n"
+"\n",
+
+    "required_items": [],
+
+    "required_current_quest_min": 2
 }
 
 
