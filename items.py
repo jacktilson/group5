@@ -9,60 +9,100 @@ item_id = {
     "name": "id card",
 
     "description":
-    """You new shiny student ID card. Expires 1 June 2017.
-You wonder why they have printed a suicide hotline number on it?...""",
-
-    "mass": 0.2
-}
-
-item_laptop = {
-    "id": "laptop",
-
-    "name": "laptop",
-
-    "description":
-    "It has seen better days. At least it has a WiFi card!",
-
-    "mass": 2.0
-}
-
-item_money = {
-    "id": "money",
-
-    "name": "money",
-
-    "description":
-    "This wad of cash is barely enough to pay your tuition fees.",
-
-    "mass": 0.5
-}
-
-item_biscuits = {
-    "id": "biscuits",
-
-    "name": "a pack of biscuits",
-
-    "description": "A pack of biscuits.",
-
-    "mass": 0.7
-}
-
-item_pen = {
-    "id": "pen",
-    
-    "name": "a pen",
-
-    "description": "A basic ballpoint pen.",
+    """This is what proves you work here. It would be a shame
+    if you were considered to be an imposter after all?""",
 
     "mass": 0.1
 }
 
-item_handbook = {
-    "id": "handbook",
+item_rock = {
+    "id": "rock",
+
+    "name": "a rock",
+
+    "description":
+    "There's not much to say about a rock. But its pretty hard. Harder than you ;)",
+
+    "mass": 2.0
+}
+
+item_kettle = {
+    "id": "kettle",
+
+    "name": "a kettle",
+
+    "description":
+    "It boils water. That's about it really.",
+
+    "mass": 1
+}
+
+item_milk = {
+    "id": "milk",
+
+    "name": "a carton of milk",
+
+    "description": "Its about two pints. Looks like someone has had a sip.",
+
+    "mass": 0.5
+}
+
+item_sugar = {
+    "id": "sugar",
     
-    "name": "a student handbook",
+    "name": "a couple of cubes of sugar",
 
-    "description": "This student handbook explains everything. Seriously.",
+    "description": "This is sweet!",
 
-    "mass": 1.5
+    "mass": 0.2
+}
+
+item_newspaper = {
+    "id": "newspaper",
+    
+    "name": "a newspaper",
+
+    "description": "Its a day old, but its more interesting than you.",
+
+    "mass": 0.4
+}
+
+item_penguin = {
+    "id": "penguin",
+    
+    "name": "a model penguin",
+
+    "description": "Its a plastic version of Tux, the linux logo thing...",
+
+    "mass": 0.5
+}
+
+item_putin = {
+    "id": "putin",
+    
+    "name": "a painting of Vladimir Putin",
+
+    "description": "Its beautiful, isn't it?",
+
+    "mass": 1
+}
+
+item_cash = {
+    "id": "cash",
+    
+    "name": "an open briefcase containing no less than $100,000,000",
+
+    "description": "Wow. All the Meal Deals you could buy with that dolla!",
+
+    "mass": 1
+}
+
+item_cash = {
+    "id": "sword",
+    
+    "name": "a samurai sword",
+
+    "description": "Yes! Finally something to spread jam on your toast with.",
+
+    "mass": 1
 }
