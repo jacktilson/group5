@@ -227,6 +227,10 @@ def opening():
     text_to_speech("Its time for your very first quest... It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
     # Hold the script for 1 second
     time.sleep(1)
+    # Give name and description of current room
+    text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+    # Hold the script for 1 second
+    time.sleep(1)
     # Tron tells apprentice to get going
     text_to_speech("Now off you go, apprentice.")
     # Clear screen
@@ -484,8 +488,8 @@ def execute_go(direction):
             # Check through all required items - if we're missing one, we can't enter.
             for required_item in destination_room["required_items"]:
                 if required_item not in inventory:
-                    print("You need to bring something else to enter " + current_room["name"] + ".")
-                    text_to_speech("You're not carrying the right thing. Go get it!")
+                    print("You need to bring something else to enter " + destination_room["name"] + ".")
+                    text_to_speech("You're not carrying the right thing to access " + destination_room["name"] + ". Go get it!")
                     return
             current_room = destination_room
             print(current_room["entry_art"])
@@ -493,8 +497,8 @@ def execute_go(direction):
             set_song(current_room["song"])
             text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
         else:
-            print("You need to complete a quest to enter " + current_room["name"] + ".")
-            text_to_speech("You know what you're paid to do. Go and do it!")
+            print("You need to complete a quest to enter " + destination_room["name"] + ".")
+            text_to_speech("Let's not get ahead of ourselves here... You need to complete a quest to access " + destination_room["name"] + ".")
     else:
         print("You cannot go there.")
         text_to_speech("Sorry, but you can't go there.")

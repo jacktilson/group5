@@ -14,7 +14,7 @@ teach you how to open a door... Please.""",
 
     "exits": {"north": "Main"},
 
-    "items": [],
+    "items": [item_rock],
 
     "song": "outside.mp3",
 
@@ -46,7 +46,7 @@ Same thing... Right?""",
 
     "exits": {"south": "Outside", "east": "Security", "west": "Spoons", "north": "Kitchen"},
 
-    "items": [item_biscuits, item_handbook],
+    "items": [item_newspaper, item_tea],
 
     "song": "main.mp3",
 
@@ -74,9 +74,9 @@ room_kitchen = {
 must be around here somewhere... surely. Anyway, at least now you can make
 the tea...""",
 
-    "exits":  {"south": "Main", "west": "Pandora"},
+    "exits":  {"south": "Main"},
 
-    "items": [],
+    "items": [item_kettle, item_milk, item_sugar],
 
     "song": "kitchen.mp3",
 
@@ -133,12 +133,11 @@ room_spoons = {
     """You've just walked in and can see Jing, that other lecturer, sat down near
 the window. She says that Kirill had started taking up singing lessons down in
 the Opera House... Perhaps we should check there. She asks you to buy her a drink.
-You refuse... Because there is much more important business at hand. A mysterious
-door with "Pandora's Box" written on it catches your eye. Perhaps it's important?""",
+You refuse... Because there is much more important business at hand.""",
 
-    "exits": {"east": "Main", "south": "Opera", "north": "Pandora"},
+    "exits": {"east": "Main", "south": "Opera"},
 
-    "items": [],
+    "items": [item_beer, item_jager, item_vodka],
 
     "song": "spoons.mp3",
 
@@ -164,9 +163,11 @@ room_opera = {
     "description":
     """Hmm... It seems like those singing lessons that Jing was talking
 about are paying off. This is music to your ears, you think to yourself.
-You take a closer look, but clearly this isn't the guy you're looking for.""",
+You take a closer look, but clearly this isn't the guy you're looking for.
+What you do notice, however, is a mysterious door with "Pandora's Box" 
+written on it. Perhaps it's important?""",
 
-    "exits": {"north": "Spoons"},
+    "exits": {"north": "Spoons", "south": "Pandora"},
 
     "items": [],
 
@@ -228,7 +229,7 @@ to drink the tea you just made is the model Linux penguin in the corner.""",
 
     "exits": {"north": "Security"},
 
-    "items": [item_pen],
+    "items": [item_penguin, item_putin, item_cash],
 
     "song": "kirill.mp3",
 
@@ -243,7 +244,7 @@ to drink the tea you just made is the model Linux penguin in the corner.""",
 "                                                  |___/                                                                                                \n" \
 "\n",
 
-    "required_items": [],
+    "required_items": [item_id, item_tea],
 
     "required_current_quest_min": 2
 }

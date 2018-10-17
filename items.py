@@ -106,3 +106,54 @@ item_cash = {
 
     "mass": 1
 }
+
+item_hammer = {
+    "id": "hammer",
+    
+    "name": "a sturdy-looking hammer",
+
+    "description": "Man. That sure looks useful to bashing some lock to pieces.",
+
+    "mass": 1
+}
+
+item_tea = {
+    "id": "tea",
+    
+    "name": "a lovely cuppa",
+
+    "description": "Tup. Ahhhhhhhh!",
+
+    "mass": 0.5
+}
+
+item_beer = {
+    "id": "beer",
+    
+    "name": "some cheap post-brexit beer",
+
+    "description": "Manky!",
+
+    "mass": 0.5
+}
+
+item_jager = {
+    "id": "jager",
+    
+    "name": "jagerbomb",
+
+    "description": "There's more calories in a shot of this than there is in a pizza.",
+
+    "mass": 0.2
+}
+
+item_vodka = {
+    "id": "vodka",
+    
+    "name": "strong russian vodka",
+
+    "description": "Manufacturers will not be responsible for your death as a result of consuming this.",
+
+    "mass": 0.5
+}
+

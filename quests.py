@@ -16,7 +16,7 @@ quest_1 = {
 
     "name": "The New Guy",
 
-    "description": "Collect your ID card from security. You'll need it to access a lot of places.",
+    "description": "Collect your ID card from security. You'll need it to access a lot of places. KEEP IT ON YOU AT ALL TIMES!!!",
 
     "criteria": """(item_id in inventory)""",
 
@@ -79,7 +79,7 @@ quest_4 = {
 
     "name": "Forced Entry",
 
-    "description": "Look for Kirill in the Opera House. You may need to force your way in.",
+    "description": "Look for Kirill in Pandora's Box. You may need to force your way in.",
 
     "criteria": """(item_hammer in inventory)""",
 
