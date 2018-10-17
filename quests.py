@@ -19,7 +19,7 @@ quest_1 = {
 
     "description": "Help MJ and Simon move offices. Its really important",
 
-    "criteria": """(item_laptop in rooms["Parking"]["items"])""",
+    "criteria": """(item_laptop in rooms["Kirill"]["items"])""",
 
     "name_art": 
     
@@ -42,7 +42,7 @@ quest_2 = {
 
     "description": "Its time for you to drop off the handbook at the office",
 
-    "criteria": """(item_handbook in rooms["Office"]["items"])""",
+    "criteria": """(item_handbook in rooms["Outside"]["items"])""",
 
     "name_art":
 

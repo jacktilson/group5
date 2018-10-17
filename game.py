@@ -17,6 +17,9 @@ def opening():
     
     # Clear screen
     print("\n" * 500)
+    # Start playing initial soundtrack
+    global set_song
+    set_song(current_room["song"])
     # ASCII art to promt user to use speakers
     print(
 """
@@ -481,6 +484,8 @@ def execute_go(direction):
     if is_valid_exit(current_room["exits"], direction) == True:
         current_room = move(current_room["exits"], direction)
         print(current_room["entry_art"])
+        # Set current song playing according to room
+        set_song(current_room["song"])
         text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"])
     else:
         print("You cannot go there.")
@@ -653,6 +658,12 @@ def text_to_speech(msg):
     # Return volume of music to default
     pygame.mixer.music.set_volume(1)
 
+def set_song(file):
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.play()
+
 def quest_completed(quest):
     """ This function will take the quest the player is on, obtain its
     criteria and check to see whether the player has met it. If they have,
@@ -681,8 +692,6 @@ def main():
 
     # Main game loop
     while True:
-
-       
 
         global current_quest
         print("Your current quest is:")
