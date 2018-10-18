@@ -532,7 +532,7 @@ def execute_take(item_ref):
 
                 # Add in the additional weight that the player is now carrying.
                 weight_carried = weight_carried + eval("item_" + item_ref)["mass"]
-                text_to_speech("You've picked up " + eval("item_" + item_ref)["name"] + " .")
+                text_to_speech("You've picked up " + eval("item_" + item_ref)["name"] + " ." + eval("item_" + item_ref)["description"])
                 return
 
         # If that item actually is not in the current room, advise player.
