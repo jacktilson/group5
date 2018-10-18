@@ -15,7 +15,6 @@ import pygame
 def opening():
     """This function is called prior to the game loop, as such it shows its contents
     prior to the game actually starting"""
-    
     # Clear screen
     print("\n" * 500)
     # Start playing initial soundtrack
@@ -698,9 +697,20 @@ def game_won():
 
     print (" You Win !!!" * 1000)
 
+def test_unicode_support():
+    try:
+        print("Testing terminal unicode support: ░█║")
+    except:
+        print()
+        print("""This game requires a terminal that supports unicode!
+We recommend using IDLE or Windows cmd.""")
+        quit()
 
 # This is the entry point of our program
 def main():
+    # Check for terminal compatibility before doing anything else
+    test_unicode_support()
+    
     # Before we jump into the main loop, we need to introduce the player.
     opening()
 
