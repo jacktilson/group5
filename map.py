@@ -48,7 +48,7 @@ Same thing... Right?""",
 
     "exits": {"south": "Outside", "east": "Security", "west": "Spoons", "north": "Kitchen"},
 
-    "items": [item_newspaper, item_tea],
+    "items": [item_newspaper],
 
     "props": [],
 
@@ -80,10 +80,10 @@ the tea...""",
 
     "exits":  {"south": "Main"},
 
-    "items": [item_milk, item_sugar],
+    "items": [item_milk, item_sugar, item_teabags],
 
     "props": [
-        {"id": "kettle", "name": "kettle", "use_action": "None"}
+        {"id": "kettle", "name": "kettle", "use_action": "inventory.append(item_tea)", "use_condition": "(item_sugar and item_milk and item_teabags) in inventory"}
     ],
 
     "song": "kitchen.mp3",

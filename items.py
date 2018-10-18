@@ -39,9 +39,19 @@ item_milk = {
 item_sugar = {
     "id": "sugar",
     
-    "name": "a couple of cubes of sugar",
+    "name": "a dozen cubes of sugar",
 
     "description": "This is sweet!",
+
+    "mass": 0.2
+}
+
+item_teabags = {
+    "id": "teabags",
+    
+    "name": "a box of prime tea bag",
+
+    "description": "You're gonna make the best tea ever with this.",
 
     "mass": 0.2
 }
