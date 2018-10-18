@@ -792,6 +792,9 @@ def main():
             # Show the menu with possible actions and ask the player
             command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"])
 
+            # Clearing contents of screen
+            print("\n" * 300)
+
             # Execute the player's command
             execute_command(command)
 
@@ -801,9 +804,6 @@ def main():
 
             
             # If there is more to do, just continue with the loop
-
-            # Clearing contents of screen
-            print("\n" * 300)
 
     # Exit by Ctrl+C
     except KeyboardInterrupt:
