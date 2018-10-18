@@ -11,6 +11,12 @@ import music
 import pyttsx3
 import time
 import pygame
+import sys
+import atexit
+
+# Global variables
+tts_engine = None # Reference to text-to-speech engine
+skip_long_parts = False # For debugging and testing, set by adding "fast" after game.py in command line
 
 def opening():
     """This function is called prior to the game loop, as such it shows its contents
@@ -20,6 +26,10 @@ def opening():
     # Start playing initial soundtrack
     global set_song
     set_song(current_room["song"])
+
+    if skip_long_parts:
+        return
+    
     # ASCII art to promt user to use speakers
     print(
 "\n" \
@@ -303,7 +313,8 @@ def print_inventory_items(items):
     <BLANKLINE>
 
     """
-    print("You have " + list_of_items(inventory) + "." + "\n")
+    if len(inventory) > 0:
+        print("You have " + list_of_items(inventory) + "." + "\n")
 
 
 def print_room(room):
@@ -406,7 +417,7 @@ def print_exit(direction, leads_to):
     print("GO " + direction.upper() + " to " + leads_to + ".")
 
 
-def print_menu(exits, room_items, inv_items):
+def print_menu(exits, room_items, inv_items, room_props):
     """This function displays the menu of available actions to the player. The
     argument exits is a dictionary of exits as exemplified in map.py. The
     arguments room_items and inv_items are the items lying around in the room
@@ -443,11 +454,13 @@ def print_menu(exits, room_items, inv_items):
         print_exit(direction, exit_leads_to(exits, direction))
 
     for something in room_items:
-        print("TAKE " + something["id"].upper() + " to take " + something["name"])
+        print("TAKE " + something["id"].upper() + " to take " + something["name"].lower())
 
     for anotherthing in inv_items:
-        print("DROP " + anotherthing["id"].upper() + " to drop your " + anotherthing["id"])
+        print("DROP " + anotherthing["id"].upper() + " to drop your " + anotherthing["name"].lower())
 
+    for prop in room_props:
+        print("USE " + prop["id"].upper() + " to use the " + prop["name"].lower())
     
     print("What do you want to do?")
 
@@ -530,8 +543,8 @@ def execute_take(item_ref):
                 current_room["items"].remove(c)
 
                 # Add in the additional weight that the player is now carrying.
-                weight_carried = weight_carried + eval("item_" + item_ref)["mass"]
-                text_to_speech("You've picked up " + eval("item_" + item_ref)["name"] + " ." + eval("item_" + item_ref)["description"])
+                weight_carried = weight_carried + c["mass"]
+                text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
                 return
 
         # If that item actually is not in the current room, advise player.
@@ -562,16 +575,16 @@ def execute_drop(item_ref):
     # If the item is indeed in the inventory, make the drop.
 
     for i in inventory:
-        if item_ref in i["id"]:
+        if item_ref == i["id"]:
             current_room["items"].append(i)
             inventory.remove(i)
 
             # Take off the additional weight that the player just dropped.
 
-            weight_carried = weight_carried - eval("item_" + item_ref)["mass"]
+            weight_carried = weight_carried - i["mass"]
 
             # Narrate what just happened
-            text_to_speech("You've just dropped " + eval("item_" + item_ref)["name"] + " .")
+            text_to_speech("You've just dropped " + i["name"] + ".")
             
             return
 
@@ -579,12 +592,28 @@ def execute_drop(item_ref):
 
     print("You cannot drop that.")
 
+def execute_use(prop_ref):
+    """This function takes an prop id as an argument and executes the prop's use
+    function. However, if there is no such prop in the room, this function prints
+    "You cannot use that."
+    """
+    
+    # If the prop is indeed in the room, use it.
 
+    for prop in current_room["props"]:
+        if prop_ref == prop["id"]:
 
- 
+            # eval the use function of the prop
+            eval(prop["use_action"])
 
+            # Narrate what just happened
+            text_to_speech("You've just used the " + prop["name"] + ".")
+            
+            return
 
+    # If that prop actually is not in the room, advise player.
 
+    print("You cannot use that.")
     
 
 def execute_command(command):
@@ -616,11 +645,17 @@ def execute_command(command):
         else:
             print("Drop what?")
 
+    elif command[0] == "use":
+        if len(command) > 1:
+            execute_use(command[1])
+        else:
+            print("Use what?")
+
     else:
         print("This makes no sense.")
 
 
-def menu(exits, room_items, inv_items):
+def menu(exits, room_items, inv_items, room_props):
     """This function, given a dictionary of possible exits from a room, and a list
     of items found in the room and carried by the player, prints the menu of
     actions using print_menu() function. It then prompts the player to type an
@@ -630,7 +665,7 @@ def menu(exits, room_items, inv_items):
     """
 
     # Display menu
-    print_menu(exits, room_items, inv_items)
+    print_menu(exits, room_items, inv_items, room_props)
 
     # Read player's input
     user_input = input("> ")
@@ -659,21 +694,42 @@ def move(exits, direction):
 
 def text_to_speech(msg):
     """This function takes an argument, msg, and speaks what it says"""
-    # Reduce volume of music
-    pygame.mixer.music.set_volume(0.33)
-    engine = pyttsx3.init()
-    engine.setProperty('rate',180)  #180 words per minute
-    engine.setProperty('volume',0.9) 
-    engine.say(str(msg))
-    engine.runAndWait()
-    # Return volume of music to default
-    pygame.mixer.music.set_volume(1)
+    global tts_engine
+    if skip_long_parts:
+        return
+    
+    try:
+        # Reduce volume of music
+        pygame.mixer.music.set_volume(0.33)
+        tts_engine.setProperty('rate',180)  #180 words per minute
+        tts_engine.setProperty('volume',0.9) 
+        tts_engine.say(str(msg))
+        tts_engine.runAndWait()
+        # Return volume of music to default
+        pygame.mixer.music.set_volume(1)
+    except KeyboardInterrupt:
+        pygame.quit()
+        quit()
+        return
+    except:
+        # Audio or text to speech failed
+        audio_error()
 
 def set_song(file):
-    pygame.mixer.init()
-    pygame.mixer.music.load(file)
-    pygame.mixer.music.set_volume(1)
-    pygame.mixer.music.play()
+    try:
+        pygame.mixer.music.load(file)
+        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.play()
+    except:
+        # Audio failed
+        audio_error()
+        
+
+def audio_error():
+    print("""
+Audio system crashed! Did you disconnect the default audio device?""")
+    pygame.quit()
+    quit()
 
 def quest_completed(quest):
     """ This function will take the quest the player is on, obtain its
@@ -708,8 +764,19 @@ We recommend using IDLE or Windows cmd.""")
 
 # This is the entry point of our program
 def main():
+    global tts_engine
+    global skip_long_parts
     # Check for terminal compatibility before doing anything else
     test_unicode_support()
+
+    # Initialise audio processes
+    pygame.mixer.init()
+    tts_engine = pyttsx3.init()
+
+    # Check if we want to skip long parts
+    if len(sys.argv) > 1:
+        if(str(sys.argv[1]) == "fast"):
+            skip_long_parts = True
     
     # Before we jump into the main loop, we need to introduce the player.
     opening()
@@ -732,7 +799,7 @@ def main():
         text_to_speech("What would you like to do next?")
 
         # Show the menu with possible actions and ask the player
-        command = menu(current_room["exits"], current_room["items"], inventory)
+        command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"])
 
         # Execute the player's command
         execute_command(command)
@@ -746,7 +813,6 @@ def main():
 
         # Clearing contents of screen
         print("\n" * 300)
-
 
 # Are we being run as a script? If so, run main().
 # '__main__' is the name of the scope in which top-level code executes.
