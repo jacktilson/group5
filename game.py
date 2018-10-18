@@ -551,7 +551,6 @@ def execute_take(item_ref):
         text_to_speech("Sorry, but you can't take that.")
 
 
-
     # If the player is carrying too much, or will be after they pick up their chosen object, advise.
     else:
         print ("You're carrying too much stuff! You've got to drop something...")
@@ -600,18 +599,25 @@ def execute_use(prop_ref):
     # If the prop is indeed in the room and the player has met the requirement to use the item, use it.
 
     for prop in current_room["props"]:
-        if (prop_ref == prop["id"]) and eval(prop["use_condition"]):
+        if (prop_ref == prop["id"]):
+            if eval(prop["use_condition"]):
 
-            # eval the use function of the prop
-            eval(prop["use_action"])
+                # eval the use function of the prop
+                eval(prop["use_action"])
 
-            # Narrate what just happened
-            text_to_speech("You've just used the " + prop["name"] + ".")
+                # Narrate what just happened
+                text_to_speech("You've just used the " + prop["name"] + ".")
 
-    # If that prop actually is not in the room or use condition not met, advise player.
+            else:
 
-        else: 
-            print("You cannot use that. Check you're carrying the right things?")
+                # If the use condition is not met, advise player.
+                print("You cannot use that right now. Check you're carrying the right things?")
+
+            return
+
+    # If that prop actually is not in the room, advise player.
+
+    print("You cannot use that.")
     
 
 def execute_command(command):
