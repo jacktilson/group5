@@ -12,7 +12,6 @@ import pyttsx3
 import time
 import pygame
 import sys
-import atexit
 
 # Global variables
 tts_engine = None # Reference to text-to-speech engine
@@ -698,39 +697,22 @@ def text_to_speech(msg):
     if skip_long_parts:
         return
     
-    try:
-        # Reduce volume of music
-        pygame.mixer.music.set_volume(0.33)
-        tts_engine.setProperty('rate',180)  #180 words per minute
-        tts_engine.setProperty('volume',0.9) 
-        tts_engine.say(str(msg))
-        tts_engine.runAndWait()
-        # Return volume of music to default
-        pygame.mixer.music.set_volume(1)
-    except KeyboardInterrupt:
-        pygame.quit()
-        quit()
-        return
-    except:
-        # Audio or text to speech failed
-        audio_error()
+    # Reduce volume of music
+    pygame.mixer.music.set_volume(0.33)
+    tts_engine = pyttsx3.init()
+    tts_engine.setProperty('rate',180)  #180 words per minute
+    tts_engine.setProperty('volume',0.9) 
+    tts_engine.say(str(msg))
+    tts_engine.runAndWait()
+    # Return volume of music to default
+    pygame.mixer.music.set_volume(1)
 
 def set_song(file):
-    try:
-        pygame.mixer.music.load(file)
-        pygame.mixer.music.set_volume(1)
-        pygame.mixer.music.play()
-    except:
-        # Audio failed
-        audio_error()
+    pygame.mixer.init()
+    pygame.mixer.music.load(file)
+    pygame.mixer.music.set_volume(1)
+    pygame.mixer.music.play()
         
-
-def audio_error():
-    print("""
-Audio system crashed! Did you disconnect the default audio device?""")
-    pygame.quit()
-    quit()
-
 def quest_completed(quest):
     """ This function will take the quest the player is on, obtain its
     criteria and check to see whether the player has met it. If they have,
@@ -754,6 +736,8 @@ def game_won():
     print (" You Win !!!" * 1000)
 
 def test_unicode_support():
+    """This function prints a short test string of unicode characters used
+    in this game. If it fails, the terminal doesn't support them."""
     try:
         print("Testing terminal unicode support: ░█║")
     except:
@@ -762,57 +746,73 @@ def test_unicode_support():
 We recommend using IDLE or Windows cmd.""")
         quit()
 
+def crash_message():
+    print("""
+The game encountered an error and was forced to exit. Your progress was not saved.""")
+    stop_and_exit()
+
+def stop_and_exit():
+    """This function performs any necessary cleanup, prints an exit message
+    and then quits."""
+    print("Exiting! This may take a few seconds.")
+    sys.exit()
+
 # This is the entry point of our program
 def main():
-    global tts_engine
     global skip_long_parts
+    
     # Check for terminal compatibility before doing anything else
     test_unicode_support()
-
-    # Initialise audio processes
-    pygame.mixer.init()
-    tts_engine = pyttsx3.init()
 
     # Check if we want to skip long parts
     if len(sys.argv) > 1:
         if(str(sys.argv[1]) == "fast"):
             skip_long_parts = True
     
-    # Before we jump into the main loop, we need to introduce the player.
-    opening()
+    try:
+        # Before we jump into the main loop, we need to introduce the player.
+        opening()
 
-    # Main game loop
-    while True:
+        # Main game loop
+        while True:
 
-        global current_quest
-        print("Your current quest is:")
-        print("\n" + str(quest_numbers[current_quest]["name_art"]) + "\n")
-        print(str(quest_numbers[current_quest]["description"]) + "\n")
-        print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
-        print("This game is best played in full screen! \n")
+            global current_quest
+            print("Your current quest is:")
+            print("\n" + str(quest_numbers[current_quest]["name_art"]) + "\n")
+            print(str(quest_numbers[current_quest]["description"]) + "\n")
+            print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
+            print("This game is best played in full screen! \n")
 
-        # Display game status (room description, inventory etc.) and narrate the name and description
-        print_room(current_room)
-        print_inventory_items(inventory)
+            # Display game status (room description, inventory etc.) and narrate the name and description
+            print_room(current_room)
+            print_inventory_items(inventory)
 
-        # Narration prompt for the user to select a choice
-        text_to_speech("What would you like to do next?")
+            # Narration prompt for the user to select a choice
+            text_to_speech("What would you like to do next?")
 
-        # Show the menu with possible actions and ask the player
-        command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"])
+            # Show the menu with possible actions and ask the player
+            command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"])
 
-        # Execute the player's command
-        execute_command(command)
+            # Execute the player's command
+            execute_command(command)
 
-        # Check to see if player has done all requisite things to complete current quest
-        if quest_completed(current_quest) == True:
-            text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+            # Check to see if player has done all requisite things to complete current quest
+            if quest_completed(current_quest) == True:
+                text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
 
-        
-        # If there is more to do, just continue with the loop
+            
+            # If there is more to do, just continue with the loop
 
-        # Clearing contents of screen
-        print("\n" * 300)
+            # Clearing contents of screen
+            print("\n" * 300)
+
+    # Exit by Ctrl+C
+    except KeyboardInterrupt:
+        stop_and_exit()
+
+    # Any other exception
+    except:
+        crash_message()
 
 # Are we being run as a script? If so, run main().
 # '__main__' is the name of the scope in which top-level code executes.
