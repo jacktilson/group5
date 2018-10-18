@@ -26,17 +26,6 @@ item_rock = {
     "mass": 2.0
 }
 
-item_kettle = {
-    "id": "kettle",
-
-    "name": "a kettle",
-
-    "description":
-    "It boils water. That's about it really.",
-
-    "mass": 1
-}
-
 item_milk = {
     "id": "milk",
 

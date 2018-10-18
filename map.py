@@ -16,6 +16,8 @@ teach you how to open a door... Please.""",
 
     "items": [item_rock],
 
+    "props": [],
+
     "song": "outside.mp3",
 
     "entry_art":
@@ -48,6 +50,8 @@ Same thing... Right?""",
 
     "items": [item_newspaper, item_tea],
 
+    "props": [],
+
     "song": "main.mp3",
 
     "entry_art":
@@ -76,7 +80,11 @@ the tea...""",
 
     "exits":  {"south": "Main"},
 
-    "items": [item_kettle, item_milk, item_sugar],
+    "items": [item_milk, item_sugar],
+
+    "props": [
+        {"id": "kettle", "name": "kettle", "use_action": "None"}
+    ],
 
     "song": "kitchen.mp3",
 
@@ -108,6 +116,8 @@ Perhaps you might need that for something... someday.""",
 
     "items": [item_id, item_hammer],
 
+    "props": [],
+
     "song": "security.mp3",
 
     "entry_art": 
@@ -138,6 +148,8 @@ You refuse... Because there is much more important business at hand.""",
     "exits": {"east": "Main", "south": "Opera"},
 
     "items": [item_beer, item_jager, item_vodka],
+
+    "props": [],
 
     "song": "spoons.mp3",
 
@@ -171,6 +183,8 @@ written on it. Perhaps it's important?""",
 
     "items": [],
 
+    "props": [],
+
     "song": "opera.mp3",
 
     "entry_art":
@@ -201,6 +215,8 @@ on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
 
     "items": [],
 
+    "props": [],
+
     "song": "pandora.mp3",
 
     "entry_art":
@@ -230,6 +246,8 @@ to drink the tea you just made is the model Linux penguin in the corner.""",
     "exits": {"north": "Security"},
 
     "items": [item_penguin, item_putin, item_cash],
+
+    "props": [],
 
     "song": "kirill.mp3",
 
