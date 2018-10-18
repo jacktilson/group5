@@ -597,22 +597,21 @@ def execute_use(prop_ref):
     "You cannot use that."
     """
     
-    # If the prop is indeed in the room, use it.
+    # If the prop is indeed in the room and the player has met the requirement to use the item, use it.
 
     for prop in current_room["props"]:
-        if prop_ref == prop["id"]:
+        if (prop_ref == prop["id"]) and eval(prop["use_condition"]):
 
             # eval the use function of the prop
             eval(prop["use_action"])
 
             # Narrate what just happened
             text_to_speech("You've just used the " + prop["name"] + ".")
-            
-            return
 
-    # If that prop actually is not in the room, advise player.
+    # If that prop actually is not in the room or use condition not met, advise player.
 
-    print("You cannot use that.")
+        else: 
+            print("You cannot use that. Check you're carrying the right things?")
     
 
 def execute_command(command):
