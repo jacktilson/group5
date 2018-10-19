@@ -816,7 +816,8 @@ def main():
         stop_and_exit()
 
     # Any other exception
-    except:
+    except Exception as e:
+        print(str(e))
         crash_message()
 
 # Are we being run as a script? If so, run main().
