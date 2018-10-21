@@ -4,8 +4,8 @@
 import time
 import base64
 import sys
-
 import anim_bear
+import anim_door
 
 # Border characters - TL, T, TR, R, BR, B, BL, L
 anim_border = "╔═╗║╝═╚║"

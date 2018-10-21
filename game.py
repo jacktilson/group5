@@ -7,11 +7,14 @@ from items import *
 from gameparser import *
 from quests import *
 import string
-import music
 import pyttsx3
 import time
 import pygame
 import sys
+import os
+from animation import *
+import anim_bear
+import anim_door
 
 # Global variables
 tts_engine = None # Reference to text-to-speech engine
@@ -22,7 +25,7 @@ def opening():
     """This function is called prior to the game loop, as such it shows its contents
     prior to the game actually starting"""
     # Clear screen
-    print("\n" * 500)
+    cls()
     # Start playing initial soundtrack
     global set_song
     set_song(current_room["song"])
@@ -46,7 +49,7 @@ def opening():
     # Hold script for 5 seconds
     time.sleep(5)
     # Clear screen
-    print("\n" * 300)
+    cls()
     # Hold script for 2 seconds
     time.sleep(2)
     # Tron welcomes player
@@ -105,7 +108,7 @@ def opening():
     # Hold script for 0.5 seconds
     time.sleep(0.5)
     # Clear screen
-    print("\n" * 300)
+    cls()
     # ASCII art of "This"
     print(
 "\n" \
@@ -149,7 +152,7 @@ def opening():
     # Tron says "is"
     text_to_speech("Iz")
     # Clear screen
-    print("\n" * 300)
+    cls()
     # Hold the script for 0.5 seconds
     time.sleep(0.5)
     # Print Tea Boy ASCII art
@@ -181,7 +184,7 @@ def opening():
     # Hold the script for 2 seconds
     time.sleep(2)
     # Clear screen
-    print("\n" * 300)
+    cls()
     # Reprint Tea Boy ASCII art
     print(
 "\n" \
@@ -243,7 +246,7 @@ def opening():
     # Tron tells apprentice to get going
     text_to_speech("Now off you go, apprentice.")
     # Clear screen
-    print("\n" * 300)
+    cls()
 
     return
 
@@ -365,19 +368,9 @@ def print_room(room):
     """
     # Display room name
     print()
-    print(
-"""
-      _,--',   _._.--._____
- .--.--';_'-.', ";_      _.,-'
-.'--'.  _.'    {`'-;_ .-.>.'
-      '-:_      )  / `' '=.
-        ) >     {_/,     /~)
-        |/               `^ .'
-
-
-""")
+    print(current_room["menu_art"])
     print()
-    print(room["name"].upper())
+    print("You're in " + room["name"].upper())
     print()
     # Display room description
     print(room["description"])
@@ -493,24 +486,44 @@ def execute_go(direction):
     (and prints the name of the room into which the player is
     moving). Otherwise, it prints "You cannot go there."
     """
+    # Advise script that current_room is global
     global current_room
+    # Check if player has entered a valid exit
     if is_valid_exit(current_room["exits"], direction) == True:
+        # If player entered a valid exit, ascertain where they are going
         destination_room = move(current_room["exits"], direction)
+        # Check if player is on a late enough quest to access room
         if current_quest >= destination_room["required_current_quest_min"]:
-            # Check through all required items - if we're missing one, we can't enter.
+            # Check through all items required to enter room
             for required_item in destination_room["required_items"]:
+                # Check if a required item isn't in player inventory
                 if required_item not in inventory:
                     print("You need to bring something else to enter " + destination_room["name"] + ".")
                     text_to_speech("You're not carrying the right thing to access " + destination_room["name"] + ". Go get it!")
                     return
+            # If its a valid exit and quest and items requirements are met, migrate rooms 
             current_room = destination_room
+            # Clear the screen prior to the animation
+            cls()
+            # Play door opening sound effect
+            set_song("door.mp3")
+            # Display opening door animation
+            print_animation(anim_door.anim)
+            # Clear the screen following the animation
+            cls()
+            # Display entry art for the current room
             print(current_room["entry_art"])
             # Set current song playing according to room
             set_song(current_room["song"])
+            # TTS announce where we're going
             text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+            # Clear the screen after entry procedure and tts intro completed
+            cls()
+        # Handle if player is on too early of a quest to go into room
         else:
             print("You need to complete a quest to enter " + destination_room["name"] + ".")
             text_to_speech("Let's not get ahead of ourselves here... You need to complete a quest to access " + destination_room["name"] + ".")
+    # Handle if player enters an invalid exit
     else:
         print("You cannot go there.")
         text_to_speech("Sorry, but you can't go there.")
@@ -613,12 +626,14 @@ def execute_use(prop_ref):
 
                 # If the use condition is not met, advise player.
                 print("You cannot use that right now. Check you're carrying the right things?")
+                text_to_speech("You cannot use that right now, make sure you're carrying what you need?")
 
             return
 
     # If that prop actually is not in the room, advise player.
 
     print("You cannot use that.")
+    text_to_speech("Sorry, but that thing isn't here.")
     
 
 def execute_command(command):
@@ -741,21 +756,43 @@ def quest_completed(quest):
     it will return a value to tell main game loop to move to the next quest
     """
 
+    # Checking if the criteria of the current quest has been met
     if eval(quest_numbers[quest]["criteria"]):
+        print(""" 
+   ___                         _        ____                               _          _                _   _ 
+  / _ \   _   _    ___   ___  | |_     / ___|   ___    _ __ ___    _ __   | |   ___  | |_    ___    __| | | |
+ | | | | | | | |  / _ \ / __| | __|   | |      / _ \  | '_ ` _ \  | '_ \  | |  / _ \ | __|  / _ \  / _` | | |
+ | |_| | | |_| | |  __/ \__ \ | |_    | |___  | (_) | | | | | | | | |_) | | | |  __/ | |_  |  __/ | (_| | |_|
+  \__\_\  \__,_|  \___| |___/  \__|    \____|  \___/  |_| |_| |_| | .__/  |_|  \___|  \__|  \___|  \__,_| (_)
+                                                                  |_|                                        
+           """)
+        print()
         print("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "! \n")
         text_to_speech("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "!")
         time.sleep(3)
+        cls()
         global current_quest
         current_quest = current_quest + 1
+        # Checking if we have now reached quest 6 (ie: final quest + 1), launching endgame before loop crashes.
+        if current_quest == 6:
+            game_won()
         return True
     else:
         return False
+
+def print_quest_info():
+    """ This function prints the current quest information, used in main loop """
+    global current_quest
+    print("Your current quest is:")
+    print("\n" + str(quest_numbers[current_quest]["name_art"]))
+    print("Quest Description: " + str(quest_numbers[current_quest]["description"]) + "\n")
+
 
 def game_won():
     """ This function simply declares what to do when the player does what
     is necessary to win the game ie current_quest = 6"""
 
-    print (" You Win !!!" * 1000)
+    print_animation(anim_bear.anim)
 
 def test_unicode_support():
     """This function prints a short test string of unicode characters used
@@ -768,9 +805,14 @@ def test_unicode_support():
 We recommend using IDLE or Windows cmd.""")
         quit()
 
+def cls():
+    """This function will simply clear the screen with 300 linebreaks"""
+    print("\n" * 500)
+
 def crash_message():
     print("""
 The game encountered an error and was forced to exit. Your progress was not saved.""")
+    time.sleep(3)
     stop_and_exit()
 
 def no_audio_message():
@@ -783,7 +825,8 @@ def stop_and_exit():
     """This function performs any necessary cleanup, prints an exit message
     and then quits."""
     print("Exiting! This may take a few seconds.")
-    sys.exit()
+    time.sleep(3)
+    os._exit(0)
 
 # This is the entry point of our program
 def main():
@@ -804,12 +847,8 @@ def main():
         # Main game loop
         while True:
 
-            global current_quest
-            print("Your current quest is:")
-            print("\n" + str(quest_numbers[current_quest]["name_art"]) + "\n")
-            print(str(quest_numbers[current_quest]["description"]) + "\n")
+            print_quest_info()
             print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
-            print("This game is best played in full screen! \n")
 
             # Display game status (room description, inventory etc.) and narrate the name and description
             print_room(current_room)
