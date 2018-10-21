@@ -16,6 +16,7 @@ import sys
 # Global variables
 tts_engine = None # Reference to text-to-speech engine
 skip_long_parts = False # For debugging and testing, set by adding "fast" after game.py in command line
+audio_supported = True # Cleared if the audio system cannot start.
 
 def opening():
     """This function is called prior to the game loop, as such it shows its contents
@@ -699,24 +700,40 @@ def move(exits, direction):
 def text_to_speech(msg):
     """This function takes an argument, msg, and speaks what it says"""
     global tts_engine
+    global audio_supported
+    
     if skip_long_parts:
         return
-    
-    # Reduce volume of music
-    pygame.mixer.music.set_volume(0.33)
-    tts_engine = pyttsx3.init()
-    tts_engine.setProperty('rate',180)  #180 words per minute
-    tts_engine.setProperty('volume',0.9) 
-    tts_engine.say(str(msg))
-    tts_engine.runAndWait()
-    # Return volume of music to default
-    pygame.mixer.music.set_volume(1)
+
+    if not audio_supported:
+        return
+
+    try:
+        # Reduce volume of music
+        pygame.mixer.music.set_volume(0.33)
+        tts_engine = pyttsx3.init()
+        tts_engine.setProperty('rate',180)  #180 words per minute
+        tts_engine.setProperty('volume',0.9) 
+        tts_engine.say(str(msg))
+        tts_engine.runAndWait()
+        # Return volume of music to default
+        pygame.mixer.music.set_volume(1)
+    except:
+        audio_supported = False
+        no_audio_message()
 
 def set_song(file):
-    pygame.mixer.init()
-    pygame.mixer.music.load(file)
-    pygame.mixer.music.set_volume(1)
-    pygame.mixer.music.play()
+    global audio_supported
+    if not audio_supported:
+        return
+    try:
+        pygame.mixer.init()
+        pygame.mixer.music.load(file)
+        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.play()
+    except:
+        audio_supported = False
+        no_audio_message()
         
 def quest_completed(quest):
     """ This function will take the quest the player is on, obtain its
@@ -756,6 +773,12 @@ def crash_message():
 The game encountered an error and was forced to exit. Your progress was not saved.""")
     stop_and_exit()
 
+def no_audio_message():
+    print("""WARNING: Your system does not seem to support audio!
+This game relies heavily on text-to-speech audio.
+The game will continue to run, but you won't get the full experience.""")
+    time.sleep(5)
+    
 def stop_and_exit():
     """This function performs any necessary cleanup, prints an exit message
     and then quits."""
@@ -816,7 +839,8 @@ def main():
         stop_and_exit()
 
     # Any other exception
-    except:
+    except Exception as e:
+        print(str(e))
         crash_message()
 
 # Are we being run as a script? If so, run main().
