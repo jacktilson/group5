@@ -23,6 +23,8 @@ paid you to do!""",
 
     "props": [],
 
+    "consumables": [],
+
     "song": "outside.mp3",
 
     "song_alt": "outside_alt.mp3",
@@ -75,6 +77,8 @@ for? You kind of like it, you think?""",
 
     "props": [],
 
+    "consumables": [],
+
     "song": "main.mp3",
 
     "song_alt": "main_alt.mp3",
@@ -124,7 +128,22 @@ like Kirill's Greatest Hits is still playing on the radio?""",
     "items": [item_milk, item_sugar, item_teabags],
 
     "props": [
-        {"id": "kettle", "name": "kettle", "use_action": "inventory.append(item_tea)", "use_condition": "item_sugar in inventory and item_milk in inventory and item_teabags in inventory", "use_comment": "you now have a lovely cuppa."}
+        {
+            "id": "kettle",
+            "name": "kettle",
+            "use_action": "inventory.append(item_tea)",
+            "use_condition": "item_sugar in inventory and item_milk in inventory and item_teabags in inventory",
+            "use_comment": "you now have a lovely cuppa."
+        }
+    ],
+
+    "consumables": [
+        {
+            "id": "sandwiches",
+            "name": "sandwiches",
+            "consume_action": "print('TODO - ADD AN ACTION HERE')",
+            "consume_comment": "TODO - ADD A COMMENT HERE"
+        }
     ],
 
     "song": "kitchen.mp3",
@@ -177,6 +196,8 @@ you've picked it up already?""",
 
     "props": [],
 
+    "consumables": [],
+
     "song": "security.mp3",
 
     "song_alt": "security_alt.mp3",
@@ -224,9 +245,30 @@ a heart. Never mind. Don't even think about having a dance! Go open that door!""
 
     "exits": {"east": "Main", "south": "Opera"},
 
-    "items": [item_beer, item_jager, item_vodka],
+    "items": [],
 
     "props": [],
+
+    "consumables": [
+        {
+            "id": "beer",
+            "name": "beer",
+            "consume_action": "print('TODO - ADD AN ACTION HERE')",
+            "consume_comment": "TODO - ADD A COMMENT HERE"
+        },
+        {
+            "id": "jager",
+            "name": "jager",
+            "consume_action": "print('TODO - ADD AN ACTION HERE')",
+            "consume_comment": "TODO - ADD A COMMENT HERE"
+        },
+        {
+            "id": "vodka",
+            "name": "vodka",
+            "consume_action": "print('TODO - ADD AN ACTION HERE')",
+            "consume_comment": "TODO - ADD A COMMENT HERE"
+        }
+    ],
 
     "song": "spoons.mp3",
 
@@ -280,6 +322,8 @@ the stage.""",
 
     "props": [],
 
+    "consumables": [],
+
     "song": "opera.mp3",
 
     "song_alt": "opera_alt.mp3",
@@ -330,6 +374,8 @@ on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
 
     "props": [],
 
+    "consumables": [],
+
     "song": "pandora.mp3",
 
     "song_alt": "pandora.mp3",
@@ -378,6 +424,8 @@ So... Are you gonna go and find Kirill or not?""",
     "items": [item_penguin, item_putin, item_cash],
 
     "props": [],
+
+    "consumables": [],
 
     "song": "kirill.mp3",
 

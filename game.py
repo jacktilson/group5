@@ -413,7 +413,7 @@ def print_exit(direction, leads_to):
     print("GO " + direction.upper() + " to " + leads_to + ".")
 
 
-def print_menu(exits, room_items, inv_items, room_props):
+def print_menu(exits, room_items, inv_items, room_props, room_consumables):
     """This function displays the menu of available actions to the player. The
     argument exits is a dictionary of exits as exemplified in map.py. The
     arguments room_items and inv_items are the items lying around in the room
@@ -457,6 +457,9 @@ def print_menu(exits, room_items, inv_items, room_props):
 
     for prop in room_props:
         print("USE " + prop["id"].upper() + " to use the " + prop["name"].lower())
+
+    for consumable in room_consumables:
+        print("CONSUME " + consumable["id"].upper() + " to consume the " + consumable["name"].lower())
     
     print("What do you want to do?")
 
@@ -649,9 +652,9 @@ def execute_drop(item_ref):
     text_to_speech("Sorry, but you can't drop that.")
 
 def execute_use(prop_ref):
-    """This function takes an prop id as an argument and executes the prop's use
-    function. However, if there is no such prop in the room, this function prints
-    "You cannot use that."
+    """This function takes an prop id as an argument and executes the prop's
+    use_action function. However, if there is no such prop in the room, this
+    function prints "You cannot use that."
     """
     
     # If the prop is indeed in the room and the player has met the requirement to use the item, use it.
@@ -664,7 +667,7 @@ def execute_use(prop_ref):
                 eval(prop["use_action"])
 
                 # Narrate what just happened
-                text_to_speech("You've just used the " + prop["name"] + ". " + prop["comment"] + ".")
+                text_to_speech("You've just used the " + prop["name"] + ". " + prop["use_comment"] + ".")
 
             else:
 
@@ -677,6 +680,31 @@ def execute_use(prop_ref):
     # If that prop actually is not in the room, advise player.
 
     print("You cannot use that.")
+    text_to_speech("Sorry, but that thing isn't here.")
+
+def execute_consume(consumable_ref):
+    """This function takes an consumable id as an argument and executes the
+    consumable's consume_action function. However, if there is no such
+    consumable in the room, this function prints "You cannot consume that."
+    """
+    
+    # If the consumable is indeed in the room, consume it.
+
+    for consumable in current_room["consumables"]:
+        if (consumable_ref == consumable["id"]):
+            # eval the use function of the prop
+            eval(consumable["consume_action"])
+
+            # Narrate what just happened
+            text_to_speech("You've just consumed the " + consumable["name"] + ". " + consumable["consume_comment"] + ".")
+
+            # Remove it from the room
+            current_room["consumables"].remove(consumable)
+
+            return
+
+    # If that prop actually is not in the room, advise player.
+    print("You cannot consume that.")
     text_to_speech("Sorry, but that thing isn't here.")
     
 
@@ -715,11 +743,20 @@ def execute_command(command):
         else:
             print("Use what?")
 
+    elif command[0] == "consume":
+        if len(command) > 1:
+            execute_consume(command[1])
+        else:
+            print("Consume what?")
+
+    elif command[0] == "exit":
+        execute_exit()
+
     else:
         print("This makes no sense.")
 
 
-def menu(exits, room_items, inv_items, room_props):
+def menu(exits, room_items, inv_items, room_props, room_consumables):
     """This function, given a dictionary of possible exits from a room, and a list
     of items found in the room and carried by the player, prints the menu of
     actions using print_menu() function. It then prompts the player to type an
@@ -729,7 +766,7 @@ def menu(exits, room_items, inv_items, room_props):
     """
 
     # Display menu
-    print_menu(exits, room_items, inv_items, room_props)
+    print_menu(exits, room_items, inv_items, room_props, room_consumables)
 
     # Read player's input
     user_input = input("> ")
@@ -868,7 +905,7 @@ We recommend using IDLE or Windows cmd.""")
         quit()
 
 def cls():
-    """This function will simply clear the screen with 300 linebreaks"""
+    """This function will simply clear the screen with 500 linebreaks"""
     print("\n" * 500)
 
 def crash_message():
@@ -920,10 +957,10 @@ def main():
             text_to_speech("What would you like to do next?")
 
             # Show the menu with possible actions and ask the player
-            command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"])
+            command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"], current_room["consumables"])
 
             # Clearing contents of screen
-            print("\n" * 300)
+            cls()
 
             # Execute the player's command
             execute_command(command)
