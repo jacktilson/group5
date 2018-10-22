@@ -777,6 +777,9 @@ def text_to_speech(msg):
         tts_engine.runAndWait()
         # Return volume of music to default
         pygame.mixer.music.set_volume(1)
+    # Exit by Ctrl+C
+    except KeyboardInterrupt:
+        stop_and_exit()
     except:
         audio_supported = False
         no_audio_message()
@@ -791,6 +794,9 @@ def set_song(file):
         pygame.mixer.music.set_volume(1)
         # Argument of -1 repeats music indefinetly.
         pygame.mixer.music.play(-1)
+    # Exit by Ctrl+C
+    except KeyboardInterrupt:
+        stop_and_exit()
     except:
         audio_supported = False
         no_audio_message()
@@ -880,8 +886,8 @@ The game will continue to run, but you won't get the full experience.""")
 def stop_and_exit():
     """This function performs any necessary cleanup, prints an exit message
     and then quits."""
-    print("Exiting! This may take a few seconds.")
-    time.sleep(3)
+    print("\nExiting! This may take a few seconds.")
+    time.sleep(1)
     os._exit(0)
 
 # This is the entry point of our program
