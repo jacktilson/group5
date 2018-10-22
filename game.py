@@ -413,7 +413,7 @@ def print_exit(direction, leads_to):
     print("GO " + direction.upper() + " to " + leads_to + ".")
 
 
-def print_menu(exits, room_items, inv_items, room_props):
+def print_menu(exits, room_items, inv_items, room_props, room_consumables):
     """This function displays the menu of available actions to the player. The
     argument exits is a dictionary of exits as exemplified in map.py. The
     arguments room_items and inv_items are the items lying around in the room
@@ -449,14 +449,28 @@ def print_menu(exits, room_items, inv_items, room_props):
         # Print the exit name and where it leads to
         print_exit(direction, exit_leads_to(exits, direction))
 
-    for something in room_items:
-        print("TAKE " + something["id"].upper() + " to take " + something["name"].lower())
+    for item_to_take in room_items:
+        print("TAKE " + item_to_take["id"].upper() + " to take " + item_to_take["name"].lower())
 
-    for anotherthing in inv_items:
-        print("DROP " + anotherthing["id"].upper() + " to drop your " + anotherthing["name"].lower())
+    if len(room_items) > 1:
+        print("TAKE ALL to take everything you can take.")
+
+    dropable_items = 0
+    for item_to_drop in inv_items:
+        if item_to_drop["can_drop"]:
+            dropable_items += 1
+            print("DROP " + item_to_drop["id"].upper() + " to drop your " + item_to_drop["name"].lower())
+
+    if dropable_items > 1:
+        print("DROP ALL to drop everything you can drop.")
 
     for prop in room_props:
         print("USE " + prop["id"].upper() + " to use the " + prop["name"].lower())
+
+    for consumable in room_consumables:
+        print("CONSUME " + consumable["id"].upper() + " to consume the " + consumable["name"].lower())
+
+    print("EXIT to quit the game.")
     
     print("What do you want to do?")
 
@@ -545,6 +559,7 @@ def total_weight_carried():
     from picking up too much after taking / allowed to pick up 
     more after a drop."""
     global inventory
+    global weight_carried
     weight_carried = 0
     for item in inventory:
         weight_carried += item["mass"]
@@ -559,36 +574,61 @@ def execute_take(item_ref):
     The max_weight_allowed variable can be altered in player.py.
     """
 
+    global weight_carried
+    
     # Obtain the initial weight being carried, based on whats in inventory.
     total_weight_carried()
 
-    # Checking that what the player is already carrying plus what they're about to pick
-    # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
+    # Check if we want to take everything
+    take_all = (item_ref == "all")
 
-    if weight_carried + eval("item_" + item_ref)["mass"] <= max_weight_allowed:
-        
-        # If the item is indeed in the current room, make the move.
+    missed_some = False
 
-        for c in current_room["items"]:
-            if item_ref == c["id"]:
+    # Temporary list to avoid concurrent list modification
+    remove_from_room = []
+
+    # If the item is indeed in the current room, make the move.
+    for c in current_room["items"]:
+        if take_all or (item_ref == c["id"]):
+            # Checking that what the player is already carrying plus what they're about to pick
+            # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
+
+            if weight_carried + c["mass"] <= max_weight_allowed:
                 inventory.append(c)
-                current_room["items"].remove(c)
+                remove_from_room.append(c)
 
                 # Add in the additional weight that the player is now carrying.
                 weight_carried = weight_carried + c["mass"]
-                text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
-                return
+                if not take_all:
+                    text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
+                    current_room["items"].remove(c)
+                    return
+                
+            # If the player will be carrying too much after they pick up their chosen item, advise.
+            else:
+                print ("You're carrying too much stuff! You've got to drop something...")
+                text_to_speech("Sorry; you're not quite strong enough to lift that... You need to drop something.")
+                missed_some = True
+                
+                if not take_all:
+                    return
 
-        # If that item actually is not in the current room, advise player.
-        print("You cannot take that.")
-        text_to_speech("Sorry, but you can't take that.")
+            
 
+    # If we were trying to take everything, output an appropriate message now.
+    if take_all:
+        for remove in remove_from_room:
+            current_room["items"].remove(remove)
+            
+        if missed_some:
+            text_to_speech("You've taken what you can, but some things were too heavy.")
+        else:
+            text_to_speech("You've just taken everything that you can take.")
+        return
 
-    # If the player is carrying too much, or will be after they pick up their chosen object, advise.
-    else:
-        print ("You're carrying too much stuff! You've got to drop something...")
-        text_to_speech("Sorry; you're not quite strong enough to lift that... You need to drop something.")
-
+    # If that item actually is not in the current room, advise player.
+    print("You cannot take that.")
+    text_to_speech("Sorry, but you can't take that.")
 
 
 def execute_drop(item_ref):
@@ -597,33 +637,49 @@ def execute_drop(item_ref):
     no such item in the inventory, this function prints "You cannot drop that."
     """
 
+    global weight_carried
+
     # Obtain the initial weight being carried, based on whats in inventory.
     total_weight_carried()
 
+    # Check if we want to drop everything
+    drop_all = (item_ref == "all")
+    
     # If the item is indeed in the inventory, make the drop.
 
+    # Temporary list to avoid concurrent list modification
+    remove_from_inventory = []
+    
     for i in inventory:
-        if item_ref == i["id"]:
+        if i["can_drop"] and (drop_all or (item_ref == i["id"])):
             current_room["items"].append(i)
-            inventory.remove(i)
+            remove_from_inventory.append(i)
 
             # Take off the additional weight that the player just dropped.
-
             weight_carried = weight_carried - i["mass"]
 
-            # Narrate what just happened
-            text_to_speech("You've just dropped " + i["name"] + ".")
-            
-            return
+            # If we're not trying to drop everything, say what we dropped and stop.
+            if not drop_all:
+                # Narrate what just happened
+                text_to_speech("You've just dropped " + i["name"] + ".")
+                inventory.remove(i)
+                return
 
+    # If we were trying to drop everything, output an appropriate message now.
+    if drop_all:
+        for remove in remove_from_inventory:
+            inventory.remove(remove)
+        text_to_speech("You've just dropped everything that you can drop.")
+        return
+    
     # If that item actually is not in the inventory, advise player.
-
     print("You cannot drop that.")
+    text_to_speech("Sorry, but you can't drop that.")
 
 def execute_use(prop_ref):
-    """This function takes an prop id as an argument and executes the prop's use
-    function. However, if there is no such prop in the room, this function prints
-    "You cannot use that."
+    """This function takes an prop id as an argument and executes the prop's
+    use_action function. However, if there is no such prop in the room, this
+    function prints "You cannot use that."
     """
     
     # If the prop is indeed in the room and the player has met the requirement to use the item, use it.
@@ -636,7 +692,7 @@ def execute_use(prop_ref):
                 eval(prop["use_action"])
 
                 # Narrate what just happened
-                text_to_speech("You've just used the " + prop["name"] + ". " + prop["comment"] + ".")
+                text_to_speech("You've just used the " + prop["name"] + ". " + prop["use_comment"] + ".")
 
             else:
 
@@ -650,7 +706,45 @@ def execute_use(prop_ref):
 
     print("You cannot use that.")
     text_to_speech("Sorry, but that thing isn't here.")
+
+def execute_consume(consumable_ref):
+    """This function takes an consumable id as an argument and executes the
+    consumable's consume_action function. However, if there is no such
+    consumable in the room, this function prints "You cannot consume that."
+    """
     
+    # If the consumable is indeed in the room, consume it.
+
+    for consumable in current_room["consumables"]:
+        if (consumable_ref == consumable["id"]):
+            # eval the use function of the prop
+            eval(consumable["consume_action"])
+
+            # Narrate what just happened
+            text_to_speech("You've just consumed the " + consumable["name"] + ". " + consumable["consume_comment"] + ".")
+
+            # Remove it from the room
+            current_room["consumables"].remove(consumable)
+
+            return
+
+    # If that prop actually is not in the room, advise player.
+    print("You cannot consume that.")
+    text_to_speech("Sorry, but that thing isn't here.")
+
+
+
+def execute_exit():
+    """This function asks the player if they really want to exit the game.
+    If they answer yes, exit. Otherwise, continue the game."""
+
+    print("Are you sure you want to quit the game? Your progress will NOT be saved!")
+    text_to_speech("You're quitting early?")
+    choice = normalise_input(input("If you're sure, type YES: "))
+    if choice == ["yes"]:
+        stop_and_exit()
+    else:
+        text_to_speech("I didn't think so!")
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
@@ -687,11 +781,20 @@ def execute_command(command):
         else:
             print("Use what?")
 
+    elif command[0] == "consume":
+        if len(command) > 1:
+            execute_consume(command[1])
+        else:
+            print("Consume what?")
+
+    elif command[0] == "exit":
+        execute_exit()
+
     else:
         print("This makes no sense.")
 
 
-def menu(exits, room_items, inv_items, room_props):
+def menu(exits, room_items, inv_items, room_props, room_consumables):
     """This function, given a dictionary of possible exits from a room, and a list
     of items found in the room and carried by the player, prints the menu of
     actions using print_menu() function. It then prompts the player to type an
@@ -701,7 +804,7 @@ def menu(exits, room_items, inv_items, room_props):
     """
 
     # Display menu
-    print_menu(exits, room_items, inv_items, room_props)
+    print_menu(exits, room_items, inv_items, room_props, room_consumables)
 
     # Read player's input
     user_input = input("> ")
@@ -749,6 +852,9 @@ def text_to_speech(msg):
         tts_engine.runAndWait()
         # Return volume of music to default
         pygame.mixer.music.set_volume(1)
+    # Exit by Ctrl+C
+    except KeyboardInterrupt:
+        stop_and_exit()
     except:
         audio_supported = False
         no_audio_message()
@@ -763,6 +869,9 @@ def set_song(file):
         pygame.mixer.music.set_volume(1)
         # Argument of -1 repeats music indefinetly.
         pygame.mixer.music.play(-1)
+    # Exit by Ctrl+C
+    except KeyboardInterrupt:
+        stop_and_exit()
     except:
         audio_supported = False
         no_audio_message()
@@ -834,7 +943,7 @@ We recommend using IDLE or Windows cmd.""")
         quit()
 
 def cls():
-    """This function will simply clear the screen with 300 linebreaks"""
+    """This function will simply clear the screen with 500 linebreaks"""
     print("\n" * 500)
 
 def crash_message():
@@ -852,8 +961,8 @@ The game will continue to run, but you won't get the full experience.""")
 def stop_and_exit():
     """This function performs any necessary cleanup, prints an exit message
     and then quits."""
-    print("Exiting! This may take a few seconds.")
-    time.sleep(3)
+    print("\nExiting! This may take a few seconds.")
+    time.sleep(1)
     os._exit(0)
 
 # This is the entry point of our program
@@ -886,10 +995,10 @@ def main():
             text_to_speech("What would you like to do next?")
 
             # Show the menu with possible actions and ask the player
-            command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"])
+            command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"], current_room["consumables"])
 
             # Clearing contents of screen
-            print("\n" * 300)
+            cls()
 
             # Execute the player's command
             execute_command(command)

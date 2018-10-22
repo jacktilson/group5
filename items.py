@@ -12,7 +12,9 @@ item_id = {
     """This is what proves you work here. It would be a shame
     if you were considered to be an imposter after all?""",
 
-    "mass": 0.1
+    "mass": 0.1,
+
+    "can_drop": False
 }
 
 item_rock = {
@@ -23,7 +25,9 @@ item_rock = {
     "description":
     "There's not much to say about a rock. But its pretty hard. Harder than you ;)",
 
-    "mass": 2.0
+    "mass": 2.0,
+
+    "can_drop": True
 }
 
 item_milk = {
@@ -33,7 +37,9 @@ item_milk = {
 
     "description": "Its about two pints. Looks like someone has had a sip.",
 
-    "mass": 0.5
+    "mass": 0.5,
+
+    "can_drop": True
 }
 
 item_sugar = {
@@ -43,7 +49,9 @@ item_sugar = {
 
     "description": "This is sweet!",
 
-    "mass": 0.2
+    "mass": 0.2,
+
+    "can_drop": True
 }
 
 item_teabags = {
@@ -53,7 +61,9 @@ item_teabags = {
 
     "description": "You're gonna make the best tea ever with this.",
 
-    "mass": 0.2
+    "mass": 0.2,
+
+    "can_drop": True
 }
 
 item_newspaper = {
@@ -63,7 +73,9 @@ item_newspaper = {
 
     "description": "Its a day old, but its more interesting than you.",
 
-    "mass": 0.4
+    "mass": 0.4,
+
+    "can_drop": True
 }
 
 item_penguin = {
@@ -73,7 +85,9 @@ item_penguin = {
 
     "description": "Its a plastic version of Tux, the linux logo thing...",
 
-    "mass": 0.5
+    "mass": 0.5,
+
+    "can_drop": True
 }
 
 item_putin = {
@@ -83,7 +97,9 @@ item_putin = {
 
     "description": "Its beautiful, isn't it?",
 
-    "mass": 1
+    "mass": 1,
+
+    "can_drop": True
 }
 
 item_cash = {
@@ -93,7 +109,9 @@ item_cash = {
 
     "description": "Wow. All the Meal Deals you could buy with that dolla!",
 
-    "mass": 1
+    "mass": 1,
+
+    "can_drop": True
 }
 
 item_cash = {
@@ -103,7 +121,9 @@ item_cash = {
 
     "description": "Yes! Finally something to spread jam on your toast with.",
 
-    "mass": 1
+    "mass": 1,
+
+    "can_drop": True
 }
 
 item_hammer = {
@@ -113,7 +133,9 @@ item_hammer = {
 
     "description": "Man. That sure looks useful to bashing some lock to pieces.",
 
-    "mass": 1
+    "mass": 1,
+
+    "can_drop": True
 }
 
 item_tea = {
@@ -123,7 +145,9 @@ item_tea = {
 
     "description": "Tup. Ahhhhhhhh!",
 
-    "mass": 0.5
+    "mass": 0.5,
+
+    "can_drop": True
 }
 
 item_beer = {
@@ -133,7 +157,9 @@ item_beer = {
 
     "description": "Manky!",
 
-    "mass": 0.5
+    "mass": 0.5,
+
+    "can_drop": True
 }
 
 item_jager = {
@@ -143,7 +169,9 @@ item_jager = {
 
     "description": "There's more calories in a shot of this than there is in a pizza.",
 
-    "mass": 0.2
+    "mass": 0.2,
+
+    "can_drop": True
 }
 
 item_vodka = {
@@ -153,6 +181,8 @@ item_vodka = {
 
     "description": "Manufacturers will not be responsible for your death as a result of consuming this.",
 
-    "mass": 0.5
+    "mass": 0.5,
+
+    "can_drop": True
 }
 
