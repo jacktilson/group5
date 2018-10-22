@@ -452,15 +452,25 @@ def print_menu(exits, room_items, inv_items, room_props, room_consumables):
     for item_to_take in room_items:
         print("TAKE " + item_to_take["id"].upper() + " to take " + item_to_take["name"].lower())
 
+    if len(room_items) > 1:
+        print("TAKE ALL to take everything you can take.")
+
+    dropable_items = 0
     for item_to_drop in inv_items:
         if item_to_drop["can_drop"]:
+            dropable_items += 1
             print("DROP " + item_to_drop["id"].upper() + " to drop your " + item_to_drop["name"].lower())
+
+    if dropable_items > 1:
+        print("DROP ALL to drop everything you can drop.")
 
     for prop in room_props:
         print("USE " + prop["id"].upper() + " to use the " + prop["name"].lower())
 
     for consumable in room_consumables:
         print("CONSUME " + consumable["id"].upper() + " to consume the " + consumable["name"].lower())
+
+    print("EXIT to quit the game.")
     
     print("What do you want to do?")
 
@@ -707,7 +717,20 @@ def execute_consume(consumable_ref):
     # If that prop actually is not in the room, advise player.
     print("You cannot consume that.")
     text_to_speech("Sorry, but that thing isn't here.")
-    
+
+
+
+def execute_exit():
+    """This function asks the player if they really want to exit the game.
+    If they answer yes, exit. Otherwise, continue the game."""
+
+    print("Are you sure you want to quit the game? Your progress will NOT be saved!")
+    text_to_speech("You're quitting early?")
+    choice = normalise_input(input("If you're sure, type YES: "))
+    if choice == ["yes"]:
+        stop_and_exit()
+    else:
+        text_to_speech("I didn't think so!")
 
 def execute_command(command):
     """This function takes a command (a list of words as returned by
