@@ -7,20 +7,32 @@ from items import *
 from gameparser import *
 from quests import *
 import string
-import music
 import pyttsx3
 import time
 import pygame
+import sys
+import os
+from animation import *
+import anim_bear
+import anim_door
+
+# Global variables
+tts_engine = None # Reference to text-to-speech engine
+skip_long_parts = False # For debugging and testing, set by adding "fast" after game.py in command line
+audio_supported = True # Cleared if the audio system cannot start.
 
 def opening():
     """This function is called prior to the game loop, as such it shows its contents
     prior to the game actually starting"""
-    
     # Clear screen
-    print("\n" * 500)
+    cls()
     # Start playing initial soundtrack
     global set_song
     set_song(current_room["song"])
+
+    if skip_long_parts:
+        return
+    
     # ASCII art to promt user to use speakers
     print(
 "\n" \
@@ -37,7 +49,7 @@ def opening():
     # Hold script for 5 seconds
     time.sleep(5)
     # Clear screen
-    print("\n" * 300)
+    cls()
     # Hold script for 2 seconds
     time.sleep(2)
     # Tron welcomes player
@@ -96,7 +108,7 @@ def opening():
     # Hold script for 0.5 seconds
     time.sleep(0.5)
     # Clear screen
-    print("\n" * 300)
+    cls()
     # ASCII art of "This"
     print(
 "\n" \
@@ -140,7 +152,7 @@ def opening():
     # Tron says "is"
     text_to_speech("Iz")
     # Clear screen
-    print("\n" * 300)
+    cls()
     # Hold the script for 0.5 seconds
     time.sleep(0.5)
     # Print Tea Boy ASCII art
@@ -172,7 +184,7 @@ def opening():
     # Hold the script for 2 seconds
     time.sleep(2)
     # Clear screen
-    print("\n" * 300)
+    cls()
     # Reprint Tea Boy ASCII art
     print(
 "\n" \
@@ -234,7 +246,7 @@ def opening():
     # Tron tells apprentice to get going
     text_to_speech("Now off you go, apprentice.")
     # Clear screen
-    print("\n" * 300)
+    cls()
 
     return
 
@@ -304,7 +316,8 @@ def print_inventory_items(items):
     <BLANKLINE>
 
     """
-    print("You have " + list_of_items(inventory) + "." + "\n")
+    if len(inventory) > 0:
+        print("You have " + list_of_items(inventory) + "." + "\n")
 
 
 def print_room(room):
@@ -355,22 +368,15 @@ def print_room(room):
     """
     # Display room name
     print()
-    print(
-"""
-      _,--',   _._.--._____
- .--.--';_'-.', ";_      _.,-'
-.'--'.  _.'    {`'-;_ .-.>.'
-      '-:_      )  / `' '=.
-        ) >     {_/,     /~)
-        |/               `^ .'
-
-
-""")
+    print(current_room["menu_art"])
     print()
-    print(room["name"].upper())
+    print("You're in " + room["name"].upper())
     print()
-    # Display room description
-    print(room["description"])
+    # Display room descriptions; if quest is 4 or more, print alt description, else regular one.
+    if current_quest >= 4:
+        print(room["description_alt"])
+    else:
+        print(room["description"])
     print()
     # Print the items in the room
     print_room_items(room)
@@ -407,7 +413,7 @@ def print_exit(direction, leads_to):
     print("GO " + direction.upper() + " to " + leads_to + ".")
 
 
-def print_menu(exits, room_items, inv_items):
+def print_menu(exits, room_items, inv_items, room_props):
     """This function displays the menu of available actions to the player. The
     argument exits is a dictionary of exits as exemplified in map.py. The
     arguments room_items and inv_items are the items lying around in the room
@@ -444,11 +450,13 @@ def print_menu(exits, room_items, inv_items):
         print_exit(direction, exit_leads_to(exits, direction))
 
     for something in room_items:
-        print("TAKE " + something["id"].upper() + " to take " + something["name"])
+        print("TAKE " + something["id"].upper() + " to take " + something["name"].lower())
 
     for anotherthing in inv_items:
-        print("DROP " + anotherthing["id"].upper() + " to drop your " + anotherthing["id"])
+        print("DROP " + anotherthing["id"].upper() + " to drop your " + anotherthing["name"].lower())
 
+    for prop in room_props:
+        print("USE " + prop["id"].upper() + " to use the " + prop["name"].lower())
     
     print("What do you want to do?")
 
@@ -481,27 +489,66 @@ def execute_go(direction):
     (and prints the name of the room into which the player is
     moving). Otherwise, it prints "You cannot go there."
     """
+    # Advise script that current_room is global
     global current_room
+    # Check if player has entered a valid exit
     if is_valid_exit(current_room["exits"], direction) == True:
+        # If player entered a valid exit, ascertain where they are going
         destination_room = move(current_room["exits"], direction)
+        # Check if player is on a late enough quest to access room
         if current_quest >= destination_room["required_current_quest_min"]:
-            # Check through all required items - if we're missing one, we can't enter.
+            # Check through all items required to enter room
             for required_item in destination_room["required_items"]:
+                # Check if a required item isn't in player inventory
                 if required_item not in inventory:
                     print("You need to bring something else to enter " + destination_room["name"] + ".")
                     text_to_speech("You're not carrying the right thing to access " + destination_room["name"] + ". Go get it!")
                     return
+            # If its a valid exit and quest and items requirements are met, migrate rooms 
             current_room = destination_room
+            # Clear the screen prior to the animation
+            cls()
+            # Play door opening sound effect
+            set_song("door.mp3")
+            # Display opening door animation
+            print_animation(anim_door.anim)
+            # Clear the screen following the animation
+            cls()
+            # Display entry art for the current room
             print(current_room["entry_art"])
-            # Set current song playing according to room
-            set_song(current_room["song"])
-            text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+            # Set current song playing according to room, alt song if quest is more than 4
+            # TTS announce where we're going, using alt description if quest is 4 or more.
+            if current_quest < 4:
+                set_song(current_room["song"])
+                text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+            # If quest is less than 4, just use the default room songs.
+            # If quest is less than 4, just use regular description.
+            else:
+                set_song(current_room["song_alt"])
+                text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description_alt"].replace("\n"," "))
+            # Clear the screen after entry procedure and tts intro completed
+            cls()
+        # Handle if player is on too early of a quest to go into room
         else:
             print("You need to complete a quest to enter " + destination_room["name"] + ".")
             text_to_speech("Let's not get ahead of ourselves here... You need to complete a quest to access " + destination_room["name"] + ".")
+    # Handle if player enters an invalid exit
     else:
         print("You cannot go there.")
         text_to_speech("Sorry, but you can't go there.")
+
+def total_weight_carried():
+    """This function returns the total weight held by the player
+    based on the items currently in the inventory and their 
+    corresponding mass values. This can then be used to add
+    and remove item masses so that the player can be prevented
+    from picking up too much after taking / allowed to pick up 
+    more after a drop."""
+    global inventory
+    weight_carried = 0
+    for item in inventory:
+        weight_carried += item["mass"]
+    return
 
 def execute_take(item_ref):
     """This function takes an item_id as an argument and moves this item from the
@@ -513,10 +560,7 @@ def execute_take(item_ref):
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
-    global inventory
-    weight_carried = 0
-    for item in inventory:
-        weight_carried = weight_carried + item["mass"]
+    total_weight_carried()
 
     # Checking that what the player is already carrying plus what they're about to pick
     # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
@@ -531,14 +575,13 @@ def execute_take(item_ref):
                 current_room["items"].remove(c)
 
                 # Add in the additional weight that the player is now carrying.
-                weight_carried = weight_carried + eval("item_" + item_ref)["mass"]
-                text_to_speech("You've picked up " + eval("item_" + item_ref)["name"] + " ." + eval("item_" + item_ref)["description"])
+                weight_carried = weight_carried + c["mass"]
+                text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
                 return
 
         # If that item actually is not in the current room, advise player.
         print("You cannot take that.")
         text_to_speech("Sorry, but you can't take that.")
-
 
 
     # If the player is carrying too much, or will be after they pick up their chosen object, advise.
@@ -555,24 +598,21 @@ def execute_drop(item_ref):
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
-
-    weight_carried = 0
-    for item in inventory:
-        weight_carried = weight_carried + item["mass"]
+    total_weight_carried()
 
     # If the item is indeed in the inventory, make the drop.
 
     for i in inventory:
-        if item_ref in i["id"]:
+        if item_ref == i["id"]:
             current_room["items"].append(i)
             inventory.remove(i)
 
             # Take off the additional weight that the player just dropped.
 
-            weight_carried = weight_carried - eval("item_" + item_ref)["mass"]
+            weight_carried = weight_carried - i["mass"]
 
             # Narrate what just happened
-            text_to_speech("You've just dropped " + eval("item_" + item_ref)["name"] + " .")
+            text_to_speech("You've just dropped " + i["name"] + ".")
             
             return
 
@@ -580,12 +620,36 @@ def execute_drop(item_ref):
 
     print("You cannot drop that.")
 
+def execute_use(prop_ref):
+    """This function takes an prop id as an argument and executes the prop's use
+    function. However, if there is no such prop in the room, this function prints
+    "You cannot use that."
+    """
+    
+    # If the prop is indeed in the room and the player has met the requirement to use the item, use it.
 
+    for prop in current_room["props"]:
+        if (prop_ref == prop["id"]):
+            if eval(prop["use_condition"]):
 
- 
+                # eval the use function of the prop
+                eval(prop["use_action"])
 
+                # Narrate what just happened
+                text_to_speech("You've just used the " + prop["name"] + ". " + prop["comment"] + ".")
 
+            else:
 
+                # If the use condition is not met, advise player.
+                print("You cannot use that right now. Check you're carrying the right things?")
+                text_to_speech("You cannot use that right now, make sure you're carrying what you need?")
+
+            return
+
+    # If that prop actually is not in the room, advise player.
+
+    print("You cannot use that.")
+    text_to_speech("Sorry, but that thing isn't here.")
     
 
 def execute_command(command):
@@ -617,11 +681,17 @@ def execute_command(command):
         else:
             print("Drop what?")
 
+    elif command[0] == "use":
+        if len(command) > 1:
+            execute_use(command[1])
+        else:
+            print("Use what?")
+
     else:
         print("This makes no sense.")
 
 
-def menu(exits, room_items, inv_items):
+def menu(exits, room_items, inv_items, room_props):
     """This function, given a dictionary of possible exits from a room, and a list
     of items found in the room and carried by the player, prints the menu of
     actions using print_menu() function. It then prompts the player to type an
@@ -631,7 +701,7 @@ def menu(exits, room_items, inv_items):
     """
 
     # Display menu
-    print_menu(exits, room_items, inv_items)
+    print_menu(exits, room_items, inv_items, room_props)
 
     # Read player's input
     user_input = input("> ")
@@ -660,83 +730,185 @@ def move(exits, direction):
 
 def text_to_speech(msg):
     """This function takes an argument, msg, and speaks what it says"""
-    # Reduce volume of music
-    pygame.mixer.music.set_volume(0.33)
-    engine = pyttsx3.init()
-    engine.setProperty('rate',180)  #180 words per minute
-    engine.setProperty('volume',0.9) 
-    engine.say(str(msg))
-    engine.runAndWait()
-    # Return volume of music to default
-    pygame.mixer.music.set_volume(1)
+    global tts_engine
+    global audio_supported
+    
+    if skip_long_parts:
+        return
+
+    if not audio_supported:
+        return
+
+    try:
+        # Reduce volume of music
+        pygame.mixer.music.set_volume(0.33)
+        tts_engine = pyttsx3.init()
+        tts_engine.setProperty('rate',180)  #180 words per minute
+        tts_engine.setProperty('volume',0.9) 
+        tts_engine.say(str(msg))
+        tts_engine.runAndWait()
+        # Return volume of music to default
+        pygame.mixer.music.set_volume(1)
+    except:
+        audio_supported = False
+        no_audio_message()
 
 def set_song(file):
-    pygame.mixer.init()
-    pygame.mixer.music.load(file)
-    pygame.mixer.music.set_volume(1)
-    pygame.mixer.music.play()
-
+    global audio_supported
+    if not audio_supported:
+        return
+    try:
+        pygame.mixer.init()
+        pygame.mixer.music.load("music/" + file)
+        pygame.mixer.music.set_volume(1)
+        # Argument of -1 repeats music indefinetly.
+        pygame.mixer.music.play(-1)
+    except:
+        audio_supported = False
+        no_audio_message()
+        
 def quest_completed(quest):
     """ This function will take the quest the player is on, obtain its
     criteria and check to see whether the player has met it. If they have,
     it will return a value to tell main game loop to move to the next quest
     """
-
+    global current_quest
+    # Checking to see whether its time to trigger endgame function (ie coming to the end of final quest?)
+    if current_quest + 1 == 6 and current_room == rooms["Pandora"]:
+        game_won()
+    # Checking if the criteria of the current quest has been met
     if eval(quest_numbers[quest]["criteria"]):
+        print(""" 
+   ___                         _        ____                               _          _                _   _ 
+  / _ \   _   _    ___   ___  | |_     / ___|   ___    _ __ ___    _ __   | |   ___  | |_    ___    __| | | |
+ | | | | | | | |  / _ \ / __| | __|   | |      / _ \  | '_ ` _ \  | '_ \  | |  / _ \ | __|  / _ \  / _` | | |
+ | |_| | | |_| | |  __/ \__ \ | |_    | |___  | (_) | | | | | | | | |_) | | | |  __/ | |_  |  __/ | (_| | |_|
+  \__\_\  \__,_|  \___| |___/  \__|    \____|  \___/  |_| |_| |_| | .__/  |_|  \___|  \__|  \___|  \__,_| (_)
+                                                                  |_|                                        
+           """)
+        print()
         print("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "! \n")
         text_to_speech("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "!")
         time.sleep(3)
-        global current_quest
+        cls()
         current_quest = current_quest + 1
+        # Checking if we have now reached quest 6 (ie: final quest + 1), launching credits before loop crashes.
+        if current_quest == 6:
+            end_credits()
         return True
     else:
         return False
+
+def print_quest_info():
+    """ This function prints the current quest information, used in main loop """
+    global current_quest
+    print("Your current quest is:")
+    print("\n" + str(quest_numbers[current_quest]["name_art"]))
+    print("Quest Description: " + str(quest_numbers[current_quest]["description"]) + "\n")
+
 
 def game_won():
     """ This function simply declares what to do when the player does what
     is necessary to win the game ie current_quest = 6"""
 
-    print (" You Win !!!" * 1000)
+    print_animation(anim_bear.anim)
+    time.sleep(1)
+    # Note, end credits are triggered by quest_completed() when current_quest == 6
+    # after this game_won() has been executed by that function too.
 
+def end_credits():
+    # End credit scene to go here, similar to opening()
+    pass
+    # Remember to place an indefinite sleep ie: "Play again? / Exit" at the end to prevent 
+    # game from returning to loop and crashing on final quest + 1 (which doesn't exist)
+
+def test_unicode_support():
+    """This function prints a short test string of unicode characters used
+    in this game. If it fails, the terminal doesn't support them."""
+    try:
+        print("Testing terminal unicode support: ░█║")
+    except:
+        print()
+        print("""This game requires a terminal that supports unicode!
+We recommend using IDLE or Windows cmd.""")
+        quit()
+
+def cls():
+    """This function will simply clear the screen with 300 linebreaks"""
+    print("\n" * 500)
+
+def crash_message():
+    print("""
+The game encountered an error and was forced to exit. Your progress was not saved.""")
+    time.sleep(3)
+    stop_and_exit()
+
+def no_audio_message():
+    print("""WARNING: Your system does not seem to support audio!
+This game relies heavily on text-to-speech audio.
+The game will continue to run, but you won't get the full experience.""")
+    time.sleep(5)
+    
+def stop_and_exit():
+    """This function performs any necessary cleanup, prints an exit message
+    and then quits."""
+    print("Exiting! This may take a few seconds.")
+    time.sleep(3)
+    os._exit(0)
 
 # This is the entry point of our program
 def main():
-    # Before we jump into the main loop, we need to introduce the player.
-    opening()
+    global skip_long_parts
+    
+    # Check for terminal compatibility before doing anything else
+    test_unicode_support()
 
-    # Main game loop
-    while True:
+    # Check if we want to skip long parts
+    if len(sys.argv) > 1:
+        if(str(sys.argv[1]) == "fast"):
+            skip_long_parts = True
+    
+    try:
+        # Before we jump into the main loop, we need to introduce the player.
+        opening()
 
-        global current_quest
-        print("Your current quest is:")
-        print("\n" + str(quest_numbers[current_quest]["name_art"]) + "\n")
-        print(str(quest_numbers[current_quest]["description"]) + "\n")
-        print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
-        print("This game is best played in full screen! \n")
+        # Main game loop
+        while True:
 
-        # Display game status (room description, inventory etc.) and narrate the name and description
-        print_room(current_room)
-        print_inventory_items(inventory)
+            print_quest_info()
+            print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
 
-        # Narration prompt for the user to select a choice
-        text_to_speech("What would you like to do next?")
+            # Display game status (room description, inventory etc.) and narrate the name and description
+            print_room(current_room)
+            print_inventory_items(inventory)
 
-        # Show the menu with possible actions and ask the player
-        command = menu(current_room["exits"], current_room["items"], inventory)
+            # Narration prompt for the user to select a choice
+            text_to_speech("What would you like to do next?")
 
-        # Execute the player's command
-        execute_command(command)
+            # Show the menu with possible actions and ask the player
+            command = menu(current_room["exits"], current_room["items"], inventory, current_room["props"])
 
-        # Check to see if player has done all requisite things to complete current quest
-        if quest_completed(current_quest) == True:
-            text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+            # Clearing contents of screen
+            print("\n" * 300)
 
-        
-        # If there is more to do, just continue with the loop
+            # Execute the player's command
+            execute_command(command)
 
-        # Clearing contents of screen
-        print("\n" * 300)
+            # Check to see if player has done all requisite things to complete current quest
+            if quest_completed(current_quest) == True:
+                text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
 
+            
+            # If there is more to do, just continue with the loop
+
+    # Exit by Ctrl+C
+    except KeyboardInterrupt:
+        stop_and_exit()
+
+    # Any other exception
+    except Exception as e:
+        print(str(e))
+        crash_message()
 
 # Are we being run as a script? If so, run main().
 # '__main__' is the name of the scope in which top-level code executes.

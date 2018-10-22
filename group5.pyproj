@@ -19,11 +19,13 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="animation.py" />
+    <Compile Include="anim_bear.py" />
     <Compile Include="game.py" />
     <Compile Include="gameparser.py" />
     <Compile Include="items.py" />
     <Compile Include="map.py" />
-    <Compile Include="music.py">
+    <Compile Include="anim_door.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="player.py" />
