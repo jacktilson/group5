@@ -15,6 +15,7 @@ import os
 from animation import *
 import anim_bear
 import anim_door
+import credits
 
 # Global variables
 tts_engine = None # Reference to text-to-speech engine
@@ -525,7 +526,7 @@ def execute_go(direction):
             # Clear the screen prior to the animation
             cls()
             # Play door opening sound effect
-            set_song("door.mp3")
+            set_song("door.mp3", False)
             # Display opening door animation
             print_animation(anim_door.anim, True)
             # Clear the screen following the animation
@@ -873,7 +874,7 @@ def text_to_speech(msg):
         audio_supported = False
         no_audio_message()
 
-def set_song(file):
+def set_song(file, loop=True):
     global audio_supported
     if not audio_supported:
         return
@@ -881,8 +882,11 @@ def set_song(file):
         pygame.mixer.init()
         pygame.mixer.music.load("music/" + file)
         pygame.mixer.music.set_volume(1)
-        # Argument of -1 repeats music indefinetly.
-        pygame.mixer.music.play(-1)
+        if loop:
+            # Argument of -1 repeats music indefinetly.
+            pygame.mixer.music.play(-1)
+        else:
+            pygame.mixer.music.play()
     # Exit by Ctrl+C
     except KeyboardInterrupt:
         stop_and_exit()
@@ -948,7 +952,42 @@ def game_won():
 
 def end_credits():
     # End credit scene to go here, similar to opening()
-    pass
+    cls()
+    time.sleep(2)
+    for credits_screen in credits.credits: 
+        print_credits_scroll_left(credits_screen)
+    time.sleep(1)
+    cls()
+    print("Thank you for playing...")
+    text_to_speech("Thank you for playing...")
+    print(
+        "\n" \
+        " .----------------.  .----------------.  .----------------.           .----------------.  .----------------.  .----------------.  \n" \
+        "| .--------------. || .--------------. || .--------------. |         | .--------------. || .--------------. || .--------------. | \n" \
+        "| |  _________   | || |  _________   | || |      __      | |         | |   ______     | || |     ____     | || |  ____  ____  | | \n" \
+        "| | |  _   _  |  | || | |_   ___  |  | || |     /  \     | |         | |  |_   _ \    | || |   .'    `.   | || | |_  _||_  _| | | \n" \
+        "| | |_/ | | \_|  | || |   | |_  \_|  | || |    / /\ \    | |         | |    | |_) |   | || |  /  .--.  \  | || |   \ \  / /   | | \n" \
+        "| |     | |      | || |   |  _|  _   | || |   / ____ \   | |         | |    |  __'.   | || |  | |    | |  | || |    \ \/ /    | | \n" \
+        "| |    _| |_     | || |  _| |___/ |  | || | _/ /    \ \_ | |         | |   _| |__) |  | || |  \  `--'  /  | || |    _|  |_    | | \n" \
+        "| |   |_____|    | || | |_________|  | || ||____|  |____|| |         | |  |_______/   | || |   `.____.'   | || |   |______|   | | \n" \
+        "| |              | || |              | || |              | |         | |              | || |              | || |              | | \n" \
+        "| '--------------' || '--------------' || '--------------' |         | '--------------' || '--------------' || '--------------' | \n" \
+        " '----------------'  '----------------'  '----------------'           '----------------'  '----------------'  '----------------'  \n" \
+        "\n"
+    )
+    text_to_speech("Tea boy.")
+    time.sleep(4)
+    print()
+    print("Play again? ")
+    choice = normalise_input(input("Type YES to play again: "))
+    if choice == ["yes"]:
+        print("\n NOT IMPLEMENTED YET")
+        # Reset everything here!
+        stop_and_exit()
+    else:
+    
+    text_to_speech("Play again another time!")
+    stop_and_exit()
     # Remember to place an indefinite sleep ie: "Play again? / Exit" at the end to prevent 
     # game from returning to loop and crashing on final quest + 1 (which doesn't exist)
 
@@ -960,16 +999,19 @@ def test_unicode_support():
     except:
         print()
         print("""This game requires a terminal that supports unicode!
-We recommend using IDLE or Windows cmd.""")
+We recommend using cmd (Command Prompt) on Windows.""")
         quit()
 
 def cls():
     """This function will simply clear the screen with 500 linebreaks"""
     print("\n" * 500)
 
-def crash_message():
-    print("""
-The game encountered an error and was forced to exit. Your progress was not saved.""")
+def crash_message(error_msg=""):
+    if len(error_msg) > 0:
+        print("\n\nAn error ocurred:\n" + error_msg)
+    else:
+        print("An unknown error ocurred.")
+    print("\nThe game encountered an error and was forced to exit. Your progress was not saved.")
     time.sleep(3)
     stop_and_exit()
 
@@ -1024,7 +1066,7 @@ def main():
             # Execute the player's command
             execute_command(command)
 
-            # Check to see if player has done all requisite things to complete current quest
+            # Check to see if player has done all requisite things to complete current quest, incrementing the quest number automatically if so.
             if quest_completed(current_quest) == True:
                 text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
 
@@ -1037,8 +1079,10 @@ def main():
 
     # Any other exception
     except Exception as e:
-        print(str(e))
-        crash_message()
+        err_string = type(e).__name__
+        if len(str(e)) > 0:
+            err_string += ": " + str(e)
+        crash_message(err_string)
 
 # Are we being run as a script? If so, run main().
 # '__main__' is the name of the scope in which top-level code executes.

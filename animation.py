@@ -23,11 +23,11 @@ def print_animation_frame(frame, border):
             anim_width = len(row)
 
     # Clear the screen
-    frame_text = "\n" * 50
+    frame_text = "\n" * 300
 
     # Add the top border
     if border:
-        frame_text += anim_border[0] + (anim_border[1] * anim_width) + anim_border[2] + "\n"
+        frame_text += " " + anim_border[0] + (anim_border[1] * anim_width) + anim_border[2] + "\n"
     
     # Add each row
     for row in frame:
@@ -52,7 +52,7 @@ def print_animation_frame(frame, border):
 
     # Add the bottom border
     if border:
-        frame_text += anim_border[6] + (anim_border[5] * anim_width) + anim_border[4] + "\n"
+        frame_text += " " + anim_border[6] + (anim_border[5] * anim_width) + anim_border[4] + "\n"
 
     # Print everything at once.
     # Using stdout doesn't add a newline afterwards, preventing jitter.
@@ -76,3 +76,47 @@ def print_animation(anim, border):
         for frame_number in anim["order"]:
             print_animation_frame(anim["frames"][frame_number], border)
             time.sleep(anim_delay)
+
+def print_credits_scroll_left(lines):
+    """This function takes a list of credits strings and prints them to the
+    screen, then scrolls them off to the left."""
+
+    margin = 8
+
+    # Compute the width of the whole credits list
+    credits_width = 0
+    for line in lines:
+        if len(line) > credits_width:
+            credits_width = len(line)
+    
+    lines_padded = []
+    for line in lines:
+        line_offset = (credits_width - len(line)) // 2
+        lines_padded.append(" " * line_offset + line)
+
+    time.sleep(1)
+    for frame in range(0, len(lines)+1):
+        credits_text = "\n" * 300
+        for linenum in range(0, len(lines)):
+            if linenum >= frame:
+                credits_text += "\n"
+            else:
+                credits_text += " " * margin + lines_padded[linenum] + "\n"
+            credits_text += "\n"
+        credits_text += "\n\n"
+        sys.stdout.write(credits_text)
+        time.sleep(0.25)
+
+    time.sleep(3)
+    for frame in range(0, credits_width + margin + 1):
+        credits_text = "\n" * 300
+        for linenum in range(0, len(lines)):
+            if len(lines_padded[linenum]) + margin - frame <= 0:
+                credits_text += "\n"
+            else:
+                credits_text += (" " * margin + lines_padded[linenum])[frame:] + "\n"
+            credits_text += "\n"
+        credits_text += "\n\n"
+        sys.stdout.write(credits_text)
+        time.sleep(0.05)
+    time.sleep(1)
