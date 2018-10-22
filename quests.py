@@ -79,7 +79,7 @@ quest_4 = {
 
     "name": "Forced Entry",
 
-    "description": "Look for Kirill in Pandora's Box. You may need to force your way in, so go and find something to break that door open with!",
+    "description": "Look for Kirill in Pandora's Box. You may need to force your way in, so go and find something to break that door open with! Security maybe?",
 
     "criteria": """(item_hammer in inventory)""",
 

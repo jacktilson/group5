@@ -53,7 +53,9 @@ paid you to do!""",
 
     "required_items": [],
 
-    "required_current_quest_min": 1
+    "required_current_quest_min": 1,
+
+    "visited": False
 }
 
 
@@ -106,7 +108,9 @@ for? You kind of like it, you think?""",
 
     "required_items": [],
 
-    "required_current_quest_min": 1
+    "required_current_quest_min": 1,
+
+    "visited": False
 }
 
 room_kitchen = {
@@ -173,7 +177,9 @@ like Kirill's Greatest Hits is still playing on the radio?""",
 
     "required_items": [],
 
-    "required_current_quest_min": 2
+    "required_current_quest_min": 2,
+
+    "visited": False
 }
 
 room_security = {
@@ -181,18 +187,19 @@ room_security = {
 
     "description":
     """There is a guy who seems to be half asleep in the corner.
-There's also a giant hammer in the corner. It looks pretty heavy.
-Perhaps you might need that for something... someday.""",
+There's a sea of old style tube TV monitors from nineteen nintey.
+Looks like the budget hasn't quite stretched. Well... So much for
+a future of pay rises?""",
 
     "description_alt":
     """The security guy is completely asleep now, a bottle of gin
 has since appeared. It must be hard work looking at CCTV cameras
-all day? But there's that huge hammer that might be useful, unless
-you've picked it up already?""",
+all day? But there's that huge hammer that you didn't spot before,
+maybe that might be useful for something?""",
 
     "exits": {"west": "Main", "south": "Kirill"},
 
-    "items": [item_id, item_hammer],
+    "items": [item_id],
 
     "props": [],
 
@@ -226,7 +233,9 @@ you've picked it up already?""",
 
     "required_items": [],
 
-    "required_current_quest_min": 1
+    "required_current_quest_min": 1,
+
+    "visited": False
 }
 
 room_spoons = {
@@ -298,7 +307,9 @@ a heart. Never mind. Don't even think about having a dance! Go open that door!""
 
     "required_items": [],
 
-    "required_current_quest_min": 3
+    "required_current_quest_min": 3,
+
+    "visited": False
 }
 
 room_opera = {
@@ -352,7 +363,9 @@ the stage.""",
 
     "required_items": [],
 
-    "required_current_quest_min": 3
+    "required_current_quest_min": 3,
+
+    "visited": False
 }
 
 room_pandora = {
@@ -404,7 +417,9 @@ on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
 
     "required_items": [item_hammer],
 
-    "required_current_quest_min": 5
+    "required_current_quest_min": 5,
+
+    "visited": False
 }
 
 room_kirill = {
@@ -454,7 +469,9 @@ So... Are you gonna go and find Kirill or not?""",
 
     "required_items": [item_id, item_tea],
 
-    "required_current_quest_min": 2
+    "required_current_quest_min": 2,
+
+    "visited": False
 }
 
 

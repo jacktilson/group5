@@ -9,6 +9,3 @@ max_weight_allowed = 3
 
 # Start game at the reception
 current_room = rooms["Outside"]
-
-# Description of what we need to do to win / may be scrapped due to quests.
-victory_req = """TBC"""

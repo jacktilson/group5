@@ -247,6 +247,8 @@ def opening():
     text_to_speech("Now off you go, apprentice.")
     # Clear screen
     cls()
+    # Register that we have now visited Outside
+    current_room["visited"] = True
 
     return
 
@@ -534,12 +536,24 @@ def execute_go(direction):
             # TTS announce where we're going, using alt description if quest is 4 or more.
             if current_quest < 4:
                 set_song(current_room["song"])
-                text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+                # If they have not visited this room before and wouldn't have heard this variant of description, introduce them.
+                if current_room["visited"] == False:
+                    text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+                # If they have visited this room before and would have heard this variant of description, just give name only.
+                else:
+                    text_to_speech("Returning to " + current_room["name"] + ".")
             # If quest is less than 4, just use the default room songs.
             # If quest is less than 4, just use regular description.
             else:
                 set_song(current_room["song_alt"])
-                text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description_alt"].replace("\n"," "))
+                # If they have not visited this room before and wouldn't have heard this variant of description, introduce them.
+                if current_room["visited"] == False:
+                    text_to_speech("You're back at " + current_room["name"] + " again. " + current_room["description_alt"].replace("\n"," "))
+                # If they have visited this room before and would have heard this variant of description, just give name only.
+                else:
+                    text_to_speech("Returning to " + current_room["name"] + ".")
+            # Register that the player has now visited this room as to prevent repeated tts descriptions should they revist.
+            current_room["visited"] = True
             # Clear the screen after entry procedure and tts intro completed
             cls()
         # Handle if player is on too early of a quest to go into room
@@ -900,10 +914,17 @@ def quest_completed(quest):
         text_to_speech("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "!")
         time.sleep(3)
         cls()
-        current_quest = current_quest + 1
+        # Increment the current quest by one
+        current_quest += 1
         # Checking if we have now reached quest 6 (ie: final quest + 1), launching credits before loop crashes.
         if current_quest == 6:
             end_credits()
+        # Resetting all visited values for all rooms to False if just gone to quest 4 as songs and descriptions have changed.
+        # Also adding hammer to The Security Suite so the player can go and fetch it.
+        if current_quest == 4:
+            rooms["Security"]["items"].append(item_hammer)
+            for key in rooms:
+                rooms[str(key)]["visited"] = False
         return True
     else:
         return False
