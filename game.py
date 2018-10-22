@@ -449,11 +449,12 @@ def print_menu(exits, room_items, inv_items, room_props, room_consumables):
         # Print the exit name and where it leads to
         print_exit(direction, exit_leads_to(exits, direction))
 
-    for something in room_items:
-        print("TAKE " + something["id"].upper() + " to take " + something["name"].lower())
+    for item_to_take in room_items:
+        print("TAKE " + item_to_take["id"].upper() + " to take " + item_to_take["name"].lower())
 
-    for anotherthing in inv_items:
-        print("DROP " + anotherthing["id"].upper() + " to drop your " + anotherthing["name"].lower())
+    for item_to_drop in inv_items:
+        if item_to_drop["can_drop"]:
+            print("DROP " + item_to_drop["id"].upper() + " to drop your " + item_to_drop["name"].lower())
 
     for prop in room_props:
         print("USE " + prop["id"].upper() + " to use the " + prop["name"].lower())
