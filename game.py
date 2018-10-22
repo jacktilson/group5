@@ -584,6 +584,9 @@ def execute_take(item_ref):
 
     missed_some = False
 
+    # Temporary list to avoid concurrent list modification
+    remove_from_room = []
+
     # If the item is indeed in the current room, make the move.
     for c in current_room["items"]:
         if take_all or (item_ref == c["id"]):
@@ -592,12 +595,13 @@ def execute_take(item_ref):
 
             if weight_carried + c["mass"] <= max_weight_allowed:
                 inventory.append(c)
-                current_room["items"].remove(c)
+                remove_from_room.append(c)
 
                 # Add in the additional weight that the player is now carrying.
                 weight_carried = weight_carried + c["mass"]
                 if not take_all:
                     text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
+                    current_room["items"].remove(c)
                     return
                 
             # If the player will be carrying too much after they pick up their chosen item, advise.
@@ -613,6 +617,9 @@ def execute_take(item_ref):
 
     # If we were trying to take everything, output an appropriate message now.
     if take_all:
+        for remove in remove_from_room:
+            current_room["items"].remove(remove)
+            
         if missed_some:
             text_to_speech("You've taken what you can, but some things were too heavy.")
         else:
@@ -639,10 +646,14 @@ def execute_drop(item_ref):
     drop_all = (item_ref == "all")
     
     # If the item is indeed in the inventory, make the drop.
+
+    # Temporary list to avoid concurrent list modification
+    remove_from_inventory = []
+    
     for i in inventory:
         if i["can_drop"] and (drop_all or (item_ref == i["id"])):
             current_room["items"].append(i)
-            inventory.remove(i)
+            remove_from_inventory.append(i)
 
             # Take off the additional weight that the player just dropped.
             weight_carried = weight_carried - i["mass"]
@@ -651,10 +662,13 @@ def execute_drop(item_ref):
             if not drop_all:
                 # Narrate what just happened
                 text_to_speech("You've just dropped " + i["name"] + ".")
+                inventory.remove(i)
                 return
 
     # If we were trying to drop everything, output an appropriate message now.
     if drop_all:
+        for remove in remove_from_inventory:
+            inventory.remove(remove)
         text_to_speech("You've just dropped everything that you can drop.")
         return
     
