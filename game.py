@@ -562,33 +562,49 @@ def execute_take(item_ref):
     # Obtain the initial weight being carried, based on whats in inventory.
     total_weight_carried()
 
-    # Checking that what the player is already carrying plus what they're about to pick
-    # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
+    # Check if we want to take everything
+    take_all = (item_ref == "all")
 
-    if weight_carried + eval("item_" + item_ref)["mass"] <= max_weight_allowed:
-        
-        # If the item is indeed in the current room, make the move.
+    missed_some = False
 
-        for c in current_room["items"]:
-            if item_ref == c["id"]:
+    # If the item is indeed in the current room, make the move.
+    for c in current_room["items"]:
+        if take_all or (item_ref == c["id"]):
+            # Checking that what the player is already carrying plus what they're about to pick
+            # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
+
+            if weight_carried + c["mass"] <= max_weight_allowed:
                 inventory.append(c)
                 current_room["items"].remove(c)
 
                 # Add in the additional weight that the player is now carrying.
                 weight_carried = weight_carried + c["mass"]
-                text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
-                return
+                if not take_all:
+                    text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
+                    return
+                
+            # If the player will be carrying too much after they pick up their chosen item, advise.
+            else:
+                print ("You're carrying too much stuff! You've got to drop something...")
+                text_to_speech("Sorry; you're not quite strong enough to lift that... You need to drop something.")
+                missed_some = True
+                
+                if not take_all:
+                    return
 
-        # If that item actually is not in the current room, advise player.
-        print("You cannot take that.")
-        text_to_speech("Sorry, but you can't take that.")
+            
 
+    # If we were trying to take everything, output an appropriate message now.
+    if take_all:
+        if missed_some:
+            text_to_speech("You've taken what you can, but some things were too heavy.")
+        else:
+            text_to_speech("You've just taken everything that you can take.")
+        return
 
-    # If the player is carrying too much, or will be after they pick up their chosen object, advise.
-    else:
-        print ("You're carrying too much stuff! You've got to drop something...")
-        text_to_speech("Sorry; you're not quite strong enough to lift that... You need to drop something.")
-
+    # If that item actually is not in the current room, advise player.
+    print("You cannot take that.")
+    text_to_speech("Sorry, but you can't take that.")
 
 
 def execute_drop(item_ref):
@@ -600,25 +616,32 @@ def execute_drop(item_ref):
     # Obtain the initial weight being carried, based on whats in inventory.
     total_weight_carried()
 
+    # Check if we want to drop everything
+    drop_all = (item_ref == "all")
+    
     # If the item is indeed in the inventory, make the drop.
-
     for i in inventory:
-        if item_ref == i["id"]:
+        if i["can_drop"] and (drop_all or (item_ref == i["id"])):
             current_room["items"].append(i)
             inventory.remove(i)
 
             # Take off the additional weight that the player just dropped.
-
             weight_carried = weight_carried - i["mass"]
 
-            # Narrate what just happened
-            text_to_speech("You've just dropped " + i["name"] + ".")
-            
-            return
+            # If we're not trying to drop everything, say what we dropped and stop.
+            if not drop_all:
+                # Narrate what just happened
+                text_to_speech("You've just dropped " + i["name"] + ".")
+                return
 
+    # If we were trying to drop everything, output an appropriate message now.
+    if drop_all:
+        text_to_speech("You've just dropped everything that you can drop.")
+        return
+    
     # If that item actually is not in the inventory, advise player.
-
     print("You cannot drop that.")
+    text_to_speech("Sorry, but you can't drop that.")
 
 def execute_use(prop_ref):
     """This function takes an prop id as an argument and executes the prop's use
