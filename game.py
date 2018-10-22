@@ -527,7 +527,7 @@ def execute_go(direction):
             # Play door opening sound effect
             set_song("door.mp3")
             # Display opening door animation
-            print_animation(anim_door.anim)
+            print_animation(anim_door.anim, True)
             # Clear the screen following the animation
             cls()
             # Display entry art for the current room
@@ -941,7 +941,7 @@ def game_won():
     """ This function simply declares what to do when the player does what
     is necessary to win the game ie current_quest = 6"""
 
-    print_animation(anim_bear.anim)
+    print_animation(anim_bear.anim, True)
     time.sleep(1)
     # Note, end credits are triggered by quest_completed() when current_quest == 6
     # after this game_won() has been executed by that function too.
