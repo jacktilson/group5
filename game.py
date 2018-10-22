@@ -372,8 +372,11 @@ def print_room(room):
     print()
     print("You're in " + room["name"].upper())
     print()
-    # Display room description
-    print(room["description"])
+    # Display room descriptions; if quest is 4 or more, print alt description, else regular one.
+    if current_quest >= 4:
+        print(room["description_alt"])
+    else:
+        print(room["description"])
     print()
     # Print the items in the room
     print_room_items(room)
@@ -513,10 +516,16 @@ def execute_go(direction):
             cls()
             # Display entry art for the current room
             print(current_room["entry_art"])
-            # Set current song playing according to room
-            set_song(current_room["song"])
-            # TTS announce where we're going
-            text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+            # Set current song playing according to room, alt song if quest is more than 4
+            # TTS announce where we're going, using alt description if quest is 4 or more.
+            if current_quest < 4:
+                set_song(current_room["song"])
+                text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description"].replace("\n"," "))
+            # If quest is less than 4, just use the default room songs.
+            # If quest is less than 4, just use regular description.
+            else:
+                set_song(current_room["song_alt"])
+                text_to_speech("You're entering " + current_room["name"] + ". " + current_room["description_alt"].replace("\n"," "))
             # Clear the screen after entry procedure and tts intro completed
             cls()
         # Handle if player is on too early of a quest to go into room
@@ -528,6 +537,19 @@ def execute_go(direction):
         print("You cannot go there.")
         text_to_speech("Sorry, but you can't go there.")
 
+def total_weight_carried():
+    """This function returns the total weight held by the player
+    based on the items currently in the inventory and their 
+    corresponding mass values. This can then be used to add
+    and remove item masses so that the player can be prevented
+    from picking up too much after taking / allowed to pick up 
+    more after a drop."""
+    global inventory
+    weight_carried = 0
+    for item in inventory:
+        weight_carried += item["mass"]
+    return
+
 def execute_take(item_ref):
     """This function takes an item_id as an argument and moves this item from the
     list of items in the current room to the player's inventory. However, if
@@ -538,10 +560,7 @@ def execute_take(item_ref):
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
-    global inventory
-    weight_carried = 0
-    for item in inventory:
-        weight_carried = weight_carried + item["mass"]
+    total_weight_carried()
 
     # Checking that what the player is already carrying plus what they're about to pick
     # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
@@ -579,10 +598,7 @@ def execute_drop(item_ref):
     """
 
     # Obtain the initial weight being carried, based on whats in inventory.
-
-    weight_carried = 0
-    for item in inventory:
-        weight_carried = weight_carried + item["mass"]
+    total_weight_carried()
 
     # If the item is indeed in the inventory, make the drop.
 
@@ -620,7 +636,7 @@ def execute_use(prop_ref):
                 eval(prop["use_action"])
 
                 # Narrate what just happened
-                text_to_speech("You've just used the " + prop["name"] + ".")
+                text_to_speech("You've just used the " + prop["name"] + ". " + prop["comment"] + ".")
 
             else:
 
@@ -743,9 +759,10 @@ def set_song(file):
         return
     try:
         pygame.mixer.init()
-        pygame.mixer.music.load(file)
+        pygame.mixer.music.load("music/" + file)
         pygame.mixer.music.set_volume(1)
-        pygame.mixer.music.play()
+        # Argument of -1 repeats music indefinetly.
+        pygame.mixer.music.play(-1)
     except:
         audio_supported = False
         no_audio_message()
@@ -755,7 +772,10 @@ def quest_completed(quest):
     criteria and check to see whether the player has met it. If they have,
     it will return a value to tell main game loop to move to the next quest
     """
-
+    global current_quest
+    # Checking to see whether its time to trigger endgame function (ie coming to the end of final quest?)
+    if current_quest + 1 == 6 and current_room == rooms["Pandora"]:
+        game_won()
     # Checking if the criteria of the current quest has been met
     if eval(quest_numbers[quest]["criteria"]):
         print(""" 
@@ -771,11 +791,10 @@ def quest_completed(quest):
         text_to_speech("Well Done! You've completed " + str(quest_numbers[quest]["name"]) + "!")
         time.sleep(3)
         cls()
-        global current_quest
         current_quest = current_quest + 1
-        # Checking if we have now reached quest 6 (ie: final quest + 1), launching endgame before loop crashes.
+        # Checking if we have now reached quest 6 (ie: final quest + 1), launching credits before loop crashes.
         if current_quest == 6:
-            game_won()
+            end_credits()
         return True
     else:
         return False
@@ -793,6 +812,15 @@ def game_won():
     is necessary to win the game ie current_quest = 6"""
 
     print_animation(anim_bear.anim)
+    time.sleep(1)
+    # Note, end credits are triggered by quest_completed() when current_quest == 6
+    # after this game_won() has been executed by that function too.
+
+def end_credits():
+    # End credit scene to go here, similar to opening()
+    pass
+    # Remember to place an indefinite sleep ie: "Play again? / Exit" at the end to prevent 
+    # game from returning to loop and crashing on final quest + 1 (which doesn't exist)
 
 def test_unicode_support():
     """This function prints a short test string of unicode characters used
