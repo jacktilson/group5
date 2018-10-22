@@ -545,6 +545,7 @@ def total_weight_carried():
     from picking up too much after taking / allowed to pick up 
     more after a drop."""
     global inventory
+    global weight_carried
     weight_carried = 0
     for item in inventory:
         weight_carried += item["mass"]
@@ -559,6 +560,8 @@ def execute_take(item_ref):
     The max_weight_allowed variable can be altered in player.py.
     """
 
+    global weight_carried
+    
     # Obtain the initial weight being carried, based on whats in inventory.
     total_weight_carried()
 
@@ -612,6 +615,8 @@ def execute_drop(item_ref):
     player's inventory to list of items in the current room. However, if there is
     no such item in the inventory, this function prints "You cannot drop that."
     """
+
+    global weight_carried
 
     # Obtain the initial weight being carried, based on whats in inventory.
     total_weight_carried()
