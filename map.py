@@ -136,7 +136,7 @@ like Kirill's Greatest Hits is still playing on the radio?""",
         {
             "id": "kettle",
             "name": "kettle",
-            "use_action": "inventory.append(item_tea) and inventory.remove(item_teabags) and inventory.remove(item_milk) and inventory.remove(item_sugar)",
+            "use_action": "inventory.append(item_tea); inventory.remove(item_teabags); inventory.remove(item_milk); inventory.remove(item_sugar)",
             "use_condition": "item_sugar in inventory and item_milk in inventory and item_teabags in inventory",
             "use_comment": "you now have a lovely cuppa. Now go get it to Kirill!"
         }

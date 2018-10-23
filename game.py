@@ -725,8 +725,8 @@ def execute_use(prop_ref):
         if (prop_ref == prop["id"]):
             if eval(prop["use_condition"]):
 
-                # eval the use function of the prop
-                eval(prop["use_action"])
+                # execute the use function of the prop
+                exec(prop["use_action"])
 
                 # Narrate what just happened
                 text_to_speech("You've just used the " + prop["name"] + ". " + prop["use_comment"] + ".")
