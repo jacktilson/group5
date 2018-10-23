@@ -79,7 +79,8 @@ quest_4 = {
 
     "name": "Forced Entry",
 
-    "description": "Look for Kirill in Pandora's Box. You may need to force your way in, so go and find something to break that door open with!",
+    "description": """Look for Kirill in Pandora's Box. You may need to force your way in, so go and find something to break that door open with!
+make sure that you are strong enough to carry it. Go eat or drink something if you cant pick it up!""",
 
     "criteria": """(item_hammer in inventory)""",
 
@@ -100,7 +101,7 @@ quest_5 = {
 
     "name": "Pandora's Box",
 
-    "description": "Go back to the Opera House with the hammer and see what's behind that mysterious door.",
+    "description": "Go back to the Opera House with the hammer and see what's behind that mysterious door. Before you go, you'd better take that sword from his office too, just in case.",
 
     "criteria": """(current_room == rooms["Pandora"])""",
 

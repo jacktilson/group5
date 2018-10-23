@@ -1,4 +1,5 @@
 from items import *
+global max_weight_allowed
 
 """This file is referred to by various functions in game.py to ascertain where different exits lead to
 and to enable the efficient reporting of different room names, which items are in them and the movement
@@ -22,6 +23,8 @@ paid you to do!""",
     "items": [item_rock],
 
     "props": [],
+
+    "consumables": [],
 
     "song": "outside.mp3",
 
@@ -51,7 +54,9 @@ paid you to do!""",
 
     "required_items": [],
 
-    "required_current_quest_min": 1
+    "required_current_quest_min": 1,
+
+    "visited": False
 }
 
 
@@ -74,6 +79,8 @@ for? You kind of like it, you think?""",
     "items": [item_newspaper],
 
     "props": [],
+
+    "consumables": [],
 
     "song": "main.mp3",
 
@@ -102,7 +109,9 @@ for? You kind of like it, you think?""",
 
     "required_items": [],
 
-    "required_current_quest_min": 1
+    "required_current_quest_min": 1,
+
+    "visited": False
 }
 
 room_kitchen = {
@@ -124,7 +133,22 @@ like Kirill's Greatest Hits is still playing on the radio?""",
     "items": [item_milk, item_sugar, item_teabags],
 
     "props": [
-        {"id": "kettle", "name": "kettle", "use_action": "inventory.append(item_tea)", "use_condition": "item_sugar in inventory and item_milk in inventory and item_teabags in inventory", "use_comment": "you now have a lovely cuppa."}
+        {
+            "id": "kettle",
+            "name": "kettle",
+            "use_action": "inventory.append(item_tea); inventory.remove(item_teabags); inventory.remove(item_milk); inventory.remove(item_sugar)",
+            "use_condition": "item_sugar in inventory and item_milk in inventory and item_teabags in inventory",
+            "use_comment": "you now have a lovely cuppa. Now go get it to Kirill!"
+        }
+    ],
+
+    "consumables": [
+        {
+            "id": "sandwiches",
+            "name": "sandwiches",
+            "consume_action": "add_strength(2)",
+            "consume_comment": "Yum. This must belong to that guy who's eating the ham or turkey sandwich in the office. But what do you care? You're now strong enough to carry more kilograms!"
+        }
     ],
 
     "song": "kitchen.mp3",
@@ -154,7 +178,9 @@ like Kirill's Greatest Hits is still playing on the radio?""",
 
     "required_items": [],
 
-    "required_current_quest_min": 2
+    "required_current_quest_min": 2,
+
+    "visited": False
 }
 
 room_security = {
@@ -162,20 +188,23 @@ room_security = {
 
     "description":
     """There is a guy who seems to be half asleep in the corner.
-There's also a giant hammer in the corner. It looks pretty heavy.
-Perhaps you might need that for something... someday.""",
+There's a sea of old style tube TV monitors from nineteen ninety.
+Looks like the budget hasn't quite stretched. Well... So much for
+a future of pay rises?""",
 
     "description_alt":
     """The security guy is completely asleep now, a bottle of gin
 has since appeared. It must be hard work looking at CCTV cameras
-all day? But there's that huge hammer that might be useful, unless
-you've picked it up already?""",
+all day? But there's that huge hammer that you didn't spot before,
+maybe that might be useful for something?""",
 
     "exits": {"west": "Main", "south": "Kirill"},
 
-    "items": [item_id, item_hammer],
+    "items": [item_id],
 
     "props": [],
+
+    "consumables": [],
 
     "song": "security.mp3",
 
@@ -205,7 +234,9 @@ you've picked it up already?""",
 
     "required_items": [],
 
-    "required_current_quest_min": 1
+    "required_current_quest_min": 1,
+
+    "visited": False
 }
 
 room_spoons = {
@@ -224,9 +255,30 @@ a heart. Never mind. Don't even think about having a dance! Go open that door!""
 
     "exits": {"east": "Main", "south": "Opera"},
 
-    "items": [item_beer, item_jager, item_vodka],
+    "items": [],
 
     "props": [],
+
+    "consumables": [
+        {
+            "id": "beer",
+            "name": "beer",
+            "consume_action": "add_strength(1)",
+            "consume_comment": "This is some good stuff, you can now carry more kilograms!"
+        },
+        {
+            "id": "jager",
+            "name": "jager",
+            "consume_action": "add_strength(1)",
+            "consume_comment": "Who knew something this German could be this good?, you can now carry more kilograms!"
+        },
+        {
+            "id": "vodka",
+            "name": "vodka",
+            "consume_action": "add_strength(1)",
+            "consume_comment": "As this is russian, it is only natural that it makes you stronger, you can now carry more kilograms!"
+        }
+    ],
 
     "song": "spoons.mp3",
 
@@ -256,7 +308,9 @@ a heart. Never mind. Don't even think about having a dance! Go open that door!""
 
     "required_items": [],
 
-    "required_current_quest_min": 3
+    "required_current_quest_min": 3,
+
+    "visited": False
 }
 
 room_opera = {
@@ -279,6 +333,8 @@ the stage.""",
     "items": [],
 
     "props": [],
+
+    "consumables": [],
 
     "song": "opera.mp3",
 
@@ -308,7 +364,9 @@ the stage.""",
 
     "required_items": [],
 
-    "required_current_quest_min": 3
+    "required_current_quest_min": 3,
+
+    "visited": False
 }
 
 room_pandora = {
@@ -329,6 +387,8 @@ on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
     "items": [],
 
     "props": [],
+
+    "consumables": [],
 
     "song": "pandora.mp3",
 
@@ -356,9 +416,11 @@ on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
 "╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝     ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ \n" \
 "\n",
 
-    "required_items": [item_hammer],
+    "required_items": [item_hammer, item_sword],
 
-    "required_current_quest_min": 5
+    "required_current_quest_min": 5,
+
+    "visited": False
 }
 
 room_kirill = {
@@ -375,9 +437,11 @@ So... Are you gonna go and find Kirill or not?""",
 
     "exits": {"north": "Security"},
 
-    "items": [item_penguin, item_putin, item_cash],
+    "items": [item_penguin, item_putin, item_cash, item_sword],
 
     "props": [],
+
+    "consumables": [],
 
     "song": "kirill.mp3",
 
@@ -406,7 +470,9 @@ So... Are you gonna go and find Kirill or not?""",
 
     "required_items": [item_id, item_tea],
 
-    "required_current_quest_min": 2
+    "required_current_quest_min": 2,
+
+    "visited": False
 }
 
 

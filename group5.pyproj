@@ -21,6 +21,7 @@
   <ItemGroup>
     <Compile Include="animation.py" />
     <Compile Include="anim_bear.py" />
+    <Compile Include="credits.py" />
     <Compile Include="game.py" />
     <Compile Include="gameparser.py" />
     <Compile Include="items.py" />
