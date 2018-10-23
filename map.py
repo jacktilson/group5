@@ -437,7 +437,7 @@ So... Are you gonna go and find Kirill or not?""",
 
     "exits": {"north": "Security"},
 
-    "items": [item_penguin, item_putin, item_cash],
+    "items": [item_penguin, item_putin, item_cash, item_sword],
 
     "props": [],
 
