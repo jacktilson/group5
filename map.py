@@ -1,4 +1,5 @@
 from items import *
+global max_weight_allowed
 
 """This file is referred to by various functions in game.py to ascertain where different exits lead to
 and to enable the efficient reporting of different room names, which items are in them and the movement
@@ -137,7 +138,7 @@ like Kirill's Greatest Hits is still playing on the radio?""",
             "name": "kettle",
             "use_action": "inventory.append(item_tea)",
             "use_condition": "item_sugar in inventory and item_milk in inventory and item_teabags in inventory",
-            "use_comment": "you now have a lovely cuppa."
+            "use_comment": "you now have a lovely cuppa. Now go get it to Kirill!"
         }
     ],
 
@@ -145,8 +146,8 @@ like Kirill's Greatest Hits is still playing on the radio?""",
         {
             "id": "sandwiches",
             "name": "sandwiches",
-            "consume_action": "print('TODO - ADD AN ACTION HERE')",
-            "consume_comment": "TODO - ADD A COMMENT HERE"
+            "consume_action": "add_strength(2)",
+            "consume_comment": "Yum. This must belong to that guy who's eating the ham or turkey sandwich in the office. But what do you care? You're now strong enough to carry more kilograms!"
         }
     ],
 
@@ -187,7 +188,7 @@ room_security = {
 
     "description":
     """There is a guy who seems to be half asleep in the corner.
-There's a sea of old style tube TV monitors from nineteen nintey.
+There's a sea of old style tube TV monitors from nineteen ninety.
 Looks like the budget hasn't quite stretched. Well... So much for
 a future of pay rises?""",
 
@@ -262,20 +263,20 @@ a heart. Never mind. Don't even think about having a dance! Go open that door!""
         {
             "id": "beer",
             "name": "beer",
-            "consume_action": "print('TODO - ADD AN ACTION HERE')",
-            "consume_comment": "TODO - ADD A COMMENT HERE"
+            "consume_action": "add_strength(1)",
+            "consume_comment": "This is some good stuff, you can now carry more kilograms!"
         },
         {
             "id": "jager",
             "name": "jager",
-            "consume_action": "print('TODO - ADD AN ACTION HERE')",
-            "consume_comment": "TODO - ADD A COMMENT HERE"
+            "consume_action": "add_strength(1)",
+            "consume_comment": "Who knew something this German could be this good?, you can now carry more kilograms!"
         },
         {
             "id": "vodka",
             "name": "vodka",
-            "consume_action": "print('TODO - ADD AN ACTION HERE')",
-            "consume_comment": "TODO - ADD A COMMENT HERE"
+            "consume_action": "add_strength(1)",
+            "consume_comment": "As this is russian, it is only natural that it makes you stronger, you can now carry more kilograms!"
         }
     ],
 

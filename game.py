@@ -453,7 +453,7 @@ def print_menu(exits, room_items, inv_items, room_props, room_consumables):
         print_exit(direction, exit_leads_to(exits, direction))
 
     for item_to_take in room_items:
-        print("TAKE " + item_to_take["id"].upper() + " to take " + item_to_take["name"].lower())
+        print("TAKE " + item_to_take["id"].upper() + " to take " + item_to_take["name"].lower() + " (" + str(item_to_take["mass"]) + " KG)")
 
     if len(room_items) > 1:
         print("TAKE ALL to take everything you can take.")
@@ -462,7 +462,7 @@ def print_menu(exits, room_items, inv_items, room_props, room_consumables):
     for item_to_drop in inv_items:
         if item_to_drop["can_drop"]:
             dropable_items += 1
-            print("DROP " + item_to_drop["id"].upper() + " to drop your " + item_to_drop["name"].lower())
+            print("DROP " + item_to_drop["id"].upper() + " to drop your " + item_to_drop["name"].lower() + " (" + str(item_to_drop["mass"]) + " KG)")
 
     if dropable_items > 1:
         print("DROP ALL to drop everything you can drop.")
@@ -727,7 +727,7 @@ def execute_consume(consumable_ref):
     consumable's consume_action function. However, if there is no such
     consumable in the room, this function prints "You cannot consume that."
     """
-    
+    global max_weight_allowed
     # If the consumable is indeed in the room, consume it.
 
     for consumable in current_room["consumables"]:
@@ -747,7 +747,15 @@ def execute_consume(consumable_ref):
     print("You cannot consume that.")
     text_to_speech("Sorry, but that thing isn't here.")
 
-
+def add_strength(kg):
+    """This function is used for rooms which contain consumables.
+    Consumables are set to increment the max_weight_allowed stat
+    in player.py, for ease of execution, this function takes an
+    argument denoting how many KG we want to increase the player
+    strength by. It is referenced unnder consume_action in map.py
+    and subsequently evaluated here."""
+    global max_weight_allowed
+    max_weight_allowed += kg
 
 def execute_exit():
     """This function asks the player if they really want to exit the game.
@@ -982,12 +990,11 @@ def end_credits():
     choice = normalise_input(input("Type YES to play again: "))
     if choice == ["yes"]:
         print("\n NOT IMPLEMENTED YET")
-        # Reset everything here!
+        # Reset everything here! # will place reset_all() function here (doesn't exist yet)
         stop_and_exit()
     else:
-    
-    text_to_speech("Play again another time!")
-    stop_and_exit()
+        text_to_speech("Play again another time!")
+        stop_and_exit()
     # Remember to place an indefinite sleep ie: "Play again? / Exit" at the end to prevent 
     # game from returning to loop and crashing on final quest + 1 (which doesn't exist)
 
@@ -1048,7 +1055,7 @@ def main():
         while True:
 
             print_quest_info()
-            print("REMEMBER: You're only strong enough to carry " + str(max_weight_allowed) + " kilograms! \n")
+            print("You're currently strong enough to carry: " + str(max_weight_allowed) + " kilograms! \n")
 
             # Display game status (room description, inventory etc.) and narrate the name and description
             print_room(current_room)

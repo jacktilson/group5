@@ -133,7 +133,7 @@ item_hammer = {
 
     "description": "Man. That sure looks useful to bashing some lock to pieces.",
 
-    "mass": 1,
+    "mass": 5,
 
     "can_drop": True
 }
