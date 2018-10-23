@@ -416,7 +416,7 @@ on. It's Kirill! He's fighting a grizzly bear and seems to be winning!""",
 "╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝     ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ \n" \
 "\n",
 
-    "required_items": [item_hammer],
+    "required_items": [item_hammer, item_sword],
 
     "required_current_quest_min": 5,
 

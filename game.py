@@ -911,6 +911,7 @@ def quest_completed(quest):
     # Checking to see whether its time to trigger endgame function (ie coming to the end of final quest?)
     if current_quest + 1 == 6 and current_room == rooms["Pandora"]:
         game_won()
+        time.sleep(1)
     # Checking if the criteria of the current quest has been met
     if eval(quest_numbers[quest]["criteria"]):
         print(""" 
@@ -941,6 +942,29 @@ def quest_completed(quest):
     else:
         return False
 
+def give_sword():
+    """This function is executed just as we enter pandora on finale quest."""
+    # Read player's input
+    text_to_speech("What? Do you want your boss to die on the first day? Call his name to throw him the sword!")
+    print("Say Kirill's name to throw him the sword, quick!")
+    shout = input("> ")
+    # Normalise the input
+    normalised_shout = normalise_input(shout)
+    if normalised_shout == ["kirill"]:
+        text_to_speech("You throw Kirill the sword with all your might and he terminates the bear. You've saved your boss. Somebody's looking for a promotion?")
+        return
+    elif normalised_shout == ["kiril"]:
+        text_to_speech("Kirill has got two letter L's in his name! Say it properly!")
+        give_sword()
+    elif normalised_shout == ["kirrill"]:
+        text_to_speech("That's not how you spell his name! Say it properly!")
+        give_sword()
+    elif normalised_shout == ["kirril"]:
+        text_to_speech("That's not how you spell his name! Say it properly!")
+        give_sword()
+    else:
+        give_sword()
+
 def print_quest_info():
     """ This function prints the current quest information, used in main loop """
     global current_quest
@@ -955,12 +979,16 @@ def game_won():
 
     print_animation(anim_bear.anim, True)
     time.sleep(1)
+    give_sword()
+    time.sleep(1)
+    return
     # Note, end credits are triggered by quest_completed() when current_quest == 6
     # after this game_won() has been executed by that function too.
 
 def end_credits():
     # End credit scene to go here, similar to opening()
     cls()
+    set_song("credits.mp3")
     time.sleep(2)
     for credits_screen in credits.credits: 
         print_credits_scroll_left(credits_screen)
