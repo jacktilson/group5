@@ -407,7 +407,7 @@ def print_room(room):
     print("You're in " + room["name"].upper())
     print()
     # Display room descriptions; if quest is 4 or more, print alt description, else regular one.
-    if current_quest >= 4:
+    if player.current_quest >= 4:
         print(room["description_alt"])
     else:
         print(room["description"])
@@ -574,7 +574,7 @@ def execute_go(direction):
             print(player.current_room["entry_art"])
             # Set current song playing according to room, alt song if quest is more than 4
             # TTS announce where we're going, using alt description if quest is 4 or more.
-            if current_quest < 4:
+            if player.current_quest < 4:
                 set_song(player.current_room["song"])
                 # If they have not visited this room before and wouldn't have heard this variant of description, introduce them.
                 if player.current_room["visited"] == False:
@@ -784,8 +784,8 @@ def execute_consume(consumable_ref):
             eval(consumable["consume_action"])
 
             # Narrate and show what just happened
-            text_to_speech("You've just consumed the " + consumable["name"] + ". " + consumable["consume_comment"] + ".")
             print("You've just consumed the " + consumable["name"] + ".")
+            text_to_speech("You've just consumed the " + consumable["name"] + ". " + consumable["consume_comment"] + ".")
             cls()
 
             # Remove it from the room
@@ -1170,7 +1170,7 @@ def main():
             if quest_completed(player.current_quest) == True:
                 print("Your upcoming quest is...")
                 print_quest_name_only()
-                text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[player.current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+                text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[player.current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[player.current_quest]["description"]) + "... ")
                 cls()
             
             # If there is more to do, just continue with the loop
