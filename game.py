@@ -655,12 +655,14 @@ def execute_take(item_ref):
                     print("You've picked up " + c["name"] + ".")
                     text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
                     player.current_room["items"].remove(c)
+                    cls()
                     return
                 
             # If the player will be carrying too much after they pick up their chosen item, advise.
             else:
                 print ("You're carrying too much stuff, " + player_name + "! You've got to drop something or consume some stuff to get stronger...")
                 text_to_speech("Sorry " + player_name + "! you're not quite strong enough to lift that... You need to drop something, or go and consume something from one of the rooms so you're strong enough.")
+                cls()
                 missed_some = True
                 
                 if not take_all:
@@ -674,9 +676,13 @@ def execute_take(item_ref):
             player.current_room["items"].remove(remove)
             
         if missed_some:
+            print("You've taken what you can, but some things were too heavy.")
             text_to_speech("You've taken what you can, but some things were too heavy.")
+            cls()
         else:
+            print("You've just taken everything that you can take.")
             text_to_speech("You've just taken everything that you can take.")
+            cls()
         return
 
     # If that item actually is not in the current room, advise player.
@@ -715,14 +721,16 @@ def execute_drop(item_ref):
                 print("You've just dropped " + i["name"] + ".")
                 text_to_speech("You've just dropped " + i["name"] + ".")
                 player.inventory.remove(i)
+                cls()
                 return
 
     # If we were trying to drop everything, output an appropriate message now.
     if drop_all:
         for remove in remove_from_inventory:
             inventory.remove(remove)
-        text_to_speech("You've just dropped everything that you can drop.")
         print("You've just dropped everything that you can drop.")
+        text_to_speech("You've just dropped everything that you can drop.")
+        cls()
         return
     
     # If that item actually is not in the inventory, advise player.
@@ -747,12 +755,14 @@ def execute_use(prop_ref):
                 # Narrate and show what just happened
                 print("You've just used the " + prop["name"] + ".")
                 text_to_speech("You've just used the " + prop["name"] + ". " + prop["use_comment"] + ".")
+                cls()
 
             else:
 
                 # If the use condition is not met, advise player.
                 print("You cannot use that right now, " + player_name + ". Check you're carrying the right things?")
                 text_to_speech("You cannot use that right now, " + player_name + ". make sure you're carrying what you need?")
+                cls()
 
             return
 
@@ -776,6 +786,7 @@ def execute_consume(consumable_ref):
             # Narrate and show what just happened
             text_to_speech("You've just consumed the " + consumable["name"] + ". " + consumable["consume_comment"] + ".")
             print("You've just consumed the " + consumable["name"] + ".")
+            cls()
 
             # Remove it from the room
             player.current_room["consumables"].remove(consumable)
@@ -1157,6 +1168,7 @@ def main():
 
             # Check to see if player has done all requisite things to complete current quest, incrementing the quest number automatically if so.
             if quest_completed(player.current_quest) == True:
+                print("Your upcoming quest is...")
                 print_quest_name_only()
                 text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[player.current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
                 cls()
