@@ -20,21 +20,21 @@ credits = [
         # REPLACE WITH ACTUAL MUSIC CREDITS
         # I labeled them in roughly the order you'll hear them in the game.
         "- MUSIC -",
-        "? by ?", # outside.mp3
-        "? by ?", # main.mp3
-        "? by ?", # security.mp3
-        "? by ?", # kitchen.mp3
-        "? by ?", # kirill.mp3
-        "? by ?", # spoons.mp3
-        "? by ?", # opera.mp3
-        "? by ?", # opera_alt.mp3
-        "? by ?", # spoons_alt.mp3
-        "? by ?", # main_alt.mp3
-        "? by ?", # outside_alt.mp3 (optional visit)
-        "? by ?", # kitchen_alt.mp3 (optional visit)
-        "? by ?", # security_alt.mp3
-        "? by ?", # kirill_alt.mp3 (optional visit)
-        "? by ?", # pandora.mp3
-        "? by ?"  # credits.mp3
+        "We Are All Astronauts by Ether", # outside.mp3
+        "Throw Off The Bowlines by James Paget", # main.mp3
+        "Billions and Billions by Stellardrone", # security.mp3
+        "Stayin' Alive by Bee Gees", # kitchen.mp3
+        "Vandringen by Lauge", # kirill.mp3
+        "Savin' Me by Nickelback", # spoons.mp3
+        "??? by Funny Russian Guy", # opera.mp3
+        "Rap by Dolphin", # opera_alt.mp3
+        "Levels by Avicii", # spoons_alt.mp3
+        "Through the Door by Lumidelic", # main_alt.mp3
+        "Irufushi by Super8 & Tab", # outside_alt.mp3 (optional visit)
+        "What Is Love? by Haddaway", # kitchen_alt.mp3 (optional visit)
+        "Simuna (Yuri Kane Remix) by Pulstate & Juventa", # security_alt.mp3
+        "Around Me (Original Mix) by XGenic", # kirill_alt.mp3 (optional visit)
+        "Main Theme by X Files", # pandora.mp3
+        "Melo by Pryda"  # credits.mp3
     ]
 ]
