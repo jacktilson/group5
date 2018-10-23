@@ -17,6 +17,32 @@ item_id = {
     "can_drop": False
 }
 
+item_wallet = {
+    "id": "wallet",
+
+    "name": "your wallet",
+
+    "description":
+    "It's got a few cards in it, but no money! That's why you're here?",
+
+    "mass": 0.3,
+
+    "can_drop": True
+}
+
+item_phone = {
+    "id": "phone",
+
+    "name": "your phone",
+
+    "description":
+    "This is a dinosaur. It's a Nokia 33 10.",
+
+    "mass": 0.5,
+
+    "can_drop": True
+}
+
 item_rock = {
     "id": "rock",
 
@@ -114,7 +140,7 @@ item_cash = {
     "can_drop": True
 }
 
-item_cash = {
+item_sword = {
     "id": "sword",
     
     "name": "a samurai sword",
@@ -131,7 +157,7 @@ item_hammer = {
     
     "name": "a sturdy-looking hammer",
 
-    "description": "Man. That sure looks useful to bashing some lock to pieces.",
+    "description": "Man. That sure looks useful for bashing some lock to pieces.",
 
     "mass": 5,
 

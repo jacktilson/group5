@@ -5,7 +5,7 @@ from gameparser import *
 import string
 
 # Setting the default quest, i.e. that at the start of play
-current_quest = 1
+current_quest = 2
 
 # Dictionaries containing all of the quest data.
 
