@@ -25,9 +25,9 @@ item_wallet = {
     "description":
     "It's got a few cards in it, but no money! That's why you're here?",
 
-    "mass": 0.3,
+    "mass": 0,
 
-    "can_drop": True
+    "can_drop": False
 }
 
 item_phone = {
@@ -38,9 +38,9 @@ item_phone = {
     "description":
     "This is a dinosaur. It's a Nokia 33 10.",
 
-    "mass": 0.5,
+    "mass": 0,
 
-    "can_drop": True
+    "can_drop": False
 }
 
 item_rock = {

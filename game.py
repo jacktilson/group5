@@ -268,6 +268,8 @@ def take_player_name():
     print("What is your name, Apprentice?")
     player_name = input("> ")
     player_name = str(normalise_input(player_name)[0])
+    # Return in title case
+    player_name = player_name.title()
     text_to_speech("Nice one, " + player_name + "! I'm sure we'll get along just fine.")
     return player_name
 
@@ -537,8 +539,8 @@ def execute_go(direction):
             for required_item in destination_room["required_items"]:
                 # Check if a required item isn't in player inventory
                 if required_item not in inventory:
-                    print("You need to bring something else to enter " + destination_room["name"] + ". " + player_name + ".")
-                    text_to_speech("You're not carrying the right thing to access " + destination_room["name"] + ". Go get it! " + player_name + ".")
+                    print("You need to bring something else to enter " + destination_room["name"] + ", " + player_name + "!")
+                    text_to_speech("You're not carrying the right thing to access " + destination_room["name"] + ". Go get it, " + player_name + "!")
                     return
             # If its a valid exit and quest and items requirements are met, migrate rooms 
             current_room = destination_room
