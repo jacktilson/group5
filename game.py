@@ -652,8 +652,8 @@ def execute_take(item_ref):
                 # Add in the additional weight that the player is now carrying.
                 player.weight_carried += c["mass"]
                 if not take_all:
-                    text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
                     print("You've picked up " + c["name"] + ".")
+                    text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
                     player.current_room["items"].remove(c)
                     return
                 
@@ -712,8 +712,8 @@ def execute_drop(item_ref):
             # If we're not trying to drop everything, say what we dropped and stop.
             if not drop_all:
                 # Narrate what just happened
-                text_to_speech("You've just dropped " + i["name"] + ".")
                 print("You've just dropped " + i["name"] + ".")
+                text_to_speech("You've just dropped " + i["name"] + ".")
                 player.inventory.remove(i)
                 return
 
@@ -745,8 +745,8 @@ def execute_use(prop_ref):
                 exec(prop["use_action"])
 
                 # Narrate and show what just happened
-                text_to_speech("You've just used the " + prop["name"] + ". " + prop["use_comment"] + ".")
                 print("You've just used the " + prop["name"] + ".")
+                text_to_speech("You've just used the " + prop["name"] + ". " + prop["use_comment"] + ".")
 
             else:
 
@@ -1157,10 +1157,9 @@ def main():
 
             # Check to see if player has done all requisite things to complete current quest, incrementing the quest number automatically if so.
             if quest_completed(player.current_quest) == True:
-                text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[player.current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
-                print("Your upcoming quest is..." + "\n")
                 print_quest_name_only()
-
+                text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[player.current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+                cls()
             
             # If there is more to do, just continue with the loop
 
