@@ -653,6 +653,7 @@ def execute_take(item_ref):
                 player.weight_carried += c["mass"]
                 if not take_all:
                     text_to_speech("You've picked up " + c["name"] + ". " + c["description"])
+                    print("You've picked up " + c["name"] + ".")
                     player.current_room["items"].remove(c)
                     return
                 
@@ -712,6 +713,7 @@ def execute_drop(item_ref):
             if not drop_all:
                 # Narrate what just happened
                 text_to_speech("You've just dropped " + i["name"] + ".")
+                print("You've just dropped " + i["name"] + ".")
                 player.inventory.remove(i)
                 return
 
@@ -720,6 +722,7 @@ def execute_drop(item_ref):
         for remove in remove_from_inventory:
             inventory.remove(remove)
         text_to_speech("You've just dropped everything that you can drop.")
+        print("You've just dropped everything that you can drop.")
         return
     
     # If that item actually is not in the inventory, advise player.
@@ -741,8 +744,9 @@ def execute_use(prop_ref):
                 # execute the use function of the prop
                 exec(prop["use_action"])
 
-                # Narrate what just happened
+                # Narrate and show what just happened
                 text_to_speech("You've just used the " + prop["name"] + ". " + prop["use_comment"] + ".")
+                print("You've just used the " + prop["name"] + ".")
 
             else:
 
@@ -769,8 +773,9 @@ def execute_consume(consumable_ref):
             # eval the use function of the prop
             eval(consumable["consume_action"])
 
-            # Narrate what just happened
+            # Narrate and show what just happened
             text_to_speech("You've just consumed the " + consumable["name"] + ". " + consumable["consume_comment"] + ".")
+            print("You've just consumed the " + consumable["name"] + ".")
 
             # Remove it from the room
             player.current_room["consumables"].remove(consumable)
@@ -1009,6 +1014,10 @@ def print_quest_info():
     print("\n" + str(quest_numbers[player.current_quest]["name_art"]))
     print("Quest Description: " + str(quest_numbers[player.current_quest]["description"]) + "\n")
 
+def print_quest_name_only():
+    """ This function prints the name of the current quest, used in main loop """
+    print("\n" + str(quest_numbers[player.current_quest]["name_art"]))
+
 
 def game_won():
     """ This function simply declares what to do when the player does what
@@ -1149,6 +1158,8 @@ def main():
             # Check to see if player has done all requisite things to complete current quest, incrementing the quest number automatically if so.
             if quest_completed(player.current_quest) == True:
                 text_to_speech("Now its time for your next quest. It's called... " + str(quest_numbers[player.current_quest]["name"]) + "... To complete this quest you must... " + str(quest_numbers[current_quest]["description"]) + "... ")
+                print("Your upcoming quest is..." + "\n")
+                print_quest_name_only()
 
             
             # If there is more to do, just continue with the loop
