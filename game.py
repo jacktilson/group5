@@ -1124,6 +1124,8 @@ def stop_and_exit():
 def reset_game():
     """This function reloads all the files defining the game state in order to
     start the game from scratch."""
+    cls()
+    set_song("outside.mp3")
     importlib.reload(map)
     importlib.reload(player)
     
