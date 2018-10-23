@@ -546,12 +546,14 @@ def execute_go(direction):
             current_room = destination_room
             # Clear the screen prior to the animation
             cls()
-            # Play door opening sound effect
-            set_song("door.mp3", False)
-            # Display opening door animation
-            print_animation(anim_door.anim, True)
-            # Clear the screen following the animation
-            cls()
+            if not skip_long_parts:
+                # Play door opening sound effect
+                set_song("door.mp3", False)
+                # Display opening door animation
+                print_animation(anim_door.anim, True)
+                # Clear the screen following the animation
+                cls()
+            
             # Display entry art for the current room
             print(current_room["entry_art"])
             # Set current song playing according to room, alt song if quest is more than 4
