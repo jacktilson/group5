@@ -4,9 +4,6 @@ from items import *
 from gameparser import *
 import string
 
-# Setting the default quest, i.e. that at the start of play
-current_quest = 1
-
 # Dictionaries containing all of the quest data.
 
 
@@ -18,7 +15,7 @@ quest_1 = {
 
     "description": "Collect your ID card from security. You'll need it to access a lot of places. KEEP IT ON YOU AT ALL TIMES!!!",
 
-    "criteria": """(item_id in inventory)""",
+    "criteria": """(item_id in player.inventory)""",
 
     "name_art": 
 "\n" \
@@ -39,7 +36,7 @@ quest_2 = {
 
     "description": "Make Kirill some tea. That's your job, after all.",
 
-    "criteria": """(item_tea in inventory) and (current_room == rooms["Kirill"])""",
+    "criteria": """(item_tea in player.inventory) and (player.current_room == map.rooms["Kirill"])""",
 
     "name_art":
 "\n" \
@@ -60,7 +57,7 @@ quest_3 = {
 
     "description": "Find Kirill. He's gone missing, and his tea is going cold.",
 
-    "criteria": """(current_room == rooms["Opera"])""",
+    "criteria": """(player.current_room == map.rooms["Opera"])""",
 
     "name_art":
 "\n" \
@@ -82,7 +79,7 @@ quest_4 = {
     "description": """Look for Kirill in Pandora's Box. You may need to force your way in, so go and find something to break that door open with!
 make sure that you are strong enough to carry it. Go eat or drink something if you cant pick it up!""",
 
-    "criteria": """(item_hammer in inventory)""",
+    "criteria": """(item_hammer in player.inventory)""",
 
     "name_art":
 "\n" \
@@ -103,7 +100,7 @@ quest_5 = {
 
     "description": "Go back to the Opera House with the hammer and see what's behind that mysterious door. Before you go, you'd better take that sword from his office too, just in case.",
 
-    "criteria": """(current_room == rooms["Pandora"])""",
+    "criteria": """(player.current_room == map.rooms["Pandora"])""",
 
     "name_art":
 "\n" \
