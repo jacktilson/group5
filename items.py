@@ -173,7 +173,7 @@ item_tea = {
 
     "mass": 0.5,
 
-    "can_drop": True
+    "can_drop": False
 }
 
 item_beer = {
