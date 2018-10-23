@@ -101,7 +101,7 @@ quest_5 = {
 
     "name": "Pandora's Box",
 
-    "description": "Go back to the Opera House with the hammer and see what's behind that mysterious door. You better take that sword from his office too, just in case.",
+    "description": "Go back to the Opera House with the hammer and see what's behind that mysterious door. Before you go, you'd better take that sword from his office too, just in case.",
 
     "criteria": """(current_room == rooms["Pandora"])""",
 
