@@ -621,8 +621,8 @@ def execute_take(item_ref):
                 
             # If the player will be carrying too much after they pick up their chosen item, advise.
             else:
-                print ("You're carrying too much stuff! You've got to drop something...")
-                text_to_speech("Sorry; you're not quite strong enough to lift that... You need to drop something.")
+                print ("You're carrying too much stuff! You've got to drop something or consume some stuff to get stronger...")
+                text_to_speech("Sorry; you're not quite strong enough to lift that... You need to drop something, or go and consume something from one of the rooms so you're strong enough.")
                 missed_some = True
                 
                 if not take_all:

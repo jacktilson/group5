@@ -8,4 +8,4 @@ inventory = []
 max_weight_allowed = 3
 
 # Start game at the reception
-current_room = rooms["Kitchen"]
+current_room = rooms["Outside"]
