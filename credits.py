@@ -36,5 +36,13 @@ credits = [
         "Around Me (Original Mix) by XGenic", # kirill_alt.mp3 (optional visit)
         "Main Theme by X Files", # pandora.mp3
         "Melo by Pryda"  # credits.mp3
+    ],
+    [
+        # Third party libraries
+        "- Third-Party Libraries -",
+        "pyttsx3 - TRON 5000 Voice (Text to Speech)",
+        "pywin32 - Dependency for pyttsx3",
+        "pypiwin32 - Dependency for pyttsx3",
+        "pygame - Music and Sound Effects Playback"
     ]
 ]
