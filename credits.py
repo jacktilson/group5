@@ -7,7 +7,7 @@ credits = [
         "Dylan Ford",
         "Ieuan Morris",
         "Jack Tilson",
-        "Kanstantsin Paul",
+        "Kanstantsin Paulau",
         "Martha Heron",
         "Nomair Shahzad"
     ],
