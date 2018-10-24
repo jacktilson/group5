@@ -131,8 +131,8 @@ def print_credits_scroll_left(lines):
         # Wait 0.25 seconds between lines
         time.sleep(0.25)
     
-    # Wait 1.5 seconds per line to allow reading time
-    time.sleep(len(lines) * 1.5)
+    # Wait 0.75 seconds per line to allow reading time
+    time.sleep(len(lines) * 0.75)
 
     # Scroll off one character at a time
     for frame in range(0, credits_width + margin + 1):
