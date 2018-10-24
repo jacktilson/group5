@@ -12,7 +12,7 @@ item_id = {
     """This is what proves you work here. It would be a shame
     if you were considered to be an imposter after all?""",
 
-    "mass": 0.1,
+    "mass": 0,
 
     "can_drop": False
 }
@@ -173,7 +173,7 @@ item_tea = {
 
     "mass": 0.5,
 
-    "can_drop": True
+    "can_drop": False
 }
 
 item_beer = {
