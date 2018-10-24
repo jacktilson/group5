@@ -33,7 +33,7 @@ credits = [
         "Irufushi by Super8 & Tab", # outside_alt.mp3 (optional visit)
         "What Is Love? by Haddaway", # kitchen_alt.mp3 (optional visit)
         "Simuna (Yuri Kane Remix) by Pulstate & Juventa", # security_alt.mp3
-        "Around Me (Original Mix) by XGenic", # kirill_alt.mp3 (optional visit)
+        "Around Me (Original Mix) by XGenic", # kirill_alt.mp3
         "Main Theme by X Files", # pandora.mp3
         "Melo by Pryda"  # credits.mp3
     ],
@@ -44,5 +44,11 @@ credits = [
         "pywin32 - Dependency for pyttsx3",
         "pypiwin32 - Dependency for pyttsx3",
         "pygame - Music and Sound Effects Playback"
+    ],
+    [
+        # Additional tools
+        "- Additional Tools -",
+        "text-image.com (Patrik Roos) - ASCII Art Images",
+        "patorjk.com (Patrick Gillespie) - ASCII Art Titles"
     ]
 ]
