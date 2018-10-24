@@ -925,7 +925,7 @@ def text_to_speech(msg):
 
     try:
         # Reduce volume of music
-        pygame.mixer.music.set_volume(0.15)
+        pygame.mixer.music.set_volume(0.075)
         # Wait a bit for the music's audio buffer to catch up with the volume change
         time.sleep(0.25)
         tts_engine = pyttsx3.init()
