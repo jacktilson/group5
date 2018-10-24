@@ -1,10 +1,5 @@
 credits = [
     [
-        "- PROGRAMMING -",
-        "Jack Tilson",
-        "Conor McSweeney"
-    ],
-    [
         # CHANGE NAMES AND ORDER APPROPRIATELY
         "- DEVELOPED BY TEAM 5 -",
         "Charlie Howe",
@@ -15,6 +10,11 @@ credits = [
         "Kanstantsin Paul",
         "Martha Heron",
         "Nomair Shahzad"
+    ],
+    [
+        "- PROGRAMMING -",
+        "Jack Tilson",
+        "Conor McSweeney"
     ],
     [
         # REPLACE WITH ACTUAL MUSIC CREDITS
