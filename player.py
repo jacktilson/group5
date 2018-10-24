@@ -1,10 +1,6 @@
 from items import *
 import map
 
-# Hold the name of the player, blank by default:
-#global player_name
-#player_name = ""
-
 # Declare what the player is holding at outset
 inventory = [item_phone, item_wallet]
 

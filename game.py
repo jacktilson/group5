@@ -128,7 +128,7 @@ def opening():
     # Clear screen
     cls()
     # Tron tells player to buckle up
-    text_to_speech("Buckle up, " + player_name + ". because:")
+    text_to_speech("Buckle up " + player_name + ", because:")
     # ASCII art of "This"
     print(
 "\n" \
@@ -276,12 +276,21 @@ def take_player_name():
     """This function is used in the opening and is how we capture the
     name of the player. It is used in various points of tts utterance."""
     global player_name
+    
     text_to_speech("What is your name, apprentice?")
     print("What is your name, Apprentice?")
     player_name = input("> ")
-    player_name = str(normalise_input(player_name)[0])
-    # Return in title case
+    
+    # Stripping punctuation
+    trans_func = str.maketrans('', '', string.punctuation)
+    player_name = player_name.translate(trans_func)
+
+    # Stripping white spaces
+    player_name = player_name.strip()
+
+    # Forcing title case
     player_name = player_name.title()
+    
     text_to_speech("Nice one, " + player_name + "! I'm sure we'll get along just fine.")
     return player_name
 
@@ -588,7 +597,7 @@ def execute_go(direction):
                 set_song(player.current_room["song_alt"])
                 # If they have not visited this room before and wouldn't have heard this variant of description, introduce them.
                 if player.current_room["visited"] == False:
-                    text_to_speech("You're back at " + player.current_room["name"] + " again, " + player_name + ". " + player.current_room["description_alt"].replace("\n"," "))
+                    text_to_speech("You're back at " + player.current_room["name"] + " again " + player_name + ". " + player.current_room["description_alt"].replace("\n"," "))
                 # If they have visited this room before and would have heard this variant of description, just give name only.
                 else:
                     text_to_speech("Returning to " + player.current_room["name"] + ".")
@@ -660,7 +669,7 @@ def execute_take(item_ref):
                 
             # If the player will be carrying too much after they pick up their chosen item, advise.
             else:
-                print ("You're carrying too much stuff, " + player_name + "! You've got to drop something or consume some stuff to get stronger...")
+                print ("You're carrying too much stuff " + player_name + "! You've got to drop something or consume some stuff to get stronger...")
                 text_to_speech("Sorry " + player_name + "! you're not quite strong enough to lift that... You need to drop something, or go and consume something from one of the rooms so you're strong enough.")
                 cls()
                 missed_some = True
@@ -761,7 +770,7 @@ def execute_use(prop_ref):
 
                 # If the use condition is not met, advise player.
                 print("You cannot use that right now, " + player_name + ". Check you're carrying the right things?")
-                text_to_speech("You cannot use that right now, " + player_name + ". make sure you're carrying what you need?")
+                text_to_speech("You cannot use that right now " + player_name + ". make sure you're carrying what you need?")
                 cls()
 
             return
@@ -916,10 +925,12 @@ def text_to_speech(msg):
 
     try:
         # Reduce volume of music
-        pygame.mixer.music.set_volume(0.33)
+        pygame.mixer.music.set_volume(0.15)
+        # Wait a bit for the music's audio buffer to catch up with the volume change
+        time.sleep(0.25)
         tts_engine = pyttsx3.init()
-        tts_engine.setProperty('rate',180)  #180 words per minute
-        tts_engine.setProperty('volume',0.9) 
+        tts_engine.setProperty('rate', 200)  #200 words per minute
+        tts_engine.setProperty('volume', 1.0) # Full volume
         tts_engine.say(str(msg))
         tts_engine.runAndWait()
         # Return volume of music to default
@@ -975,7 +986,7 @@ def quest_completed(quest):
             )
             print()
             print("Well Done, " + player_name + "! You've completed " + str(quest_numbers[quest]["name"]) + "! \n")
-            text_to_speech("Well Done, " + player_name + "! You've completed " + str(quest_numbers[quest]["name"]) + "!")
+            text_to_speech("Well Done " + player_name + "! You've completed " + str(quest_numbers[quest]["name"]) + "!")
             time.sleep(3)
         cls()
         # Increment the current quest by one
@@ -1125,9 +1136,9 @@ def reset_game():
     """This function reloads all the files defining the game state in order to
     start the game from scratch."""
     cls()
-    set_song("outside.mp3")
     importlib.reload(map)
     importlib.reload(player)
+    set_song(player.current_room["song"])
     
 
 # This is the entry point of our program
