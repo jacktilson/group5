@@ -654,7 +654,7 @@ def execute_take(item_ref):
             # Checking that what the player is already carrying plus what they're about to pick
             # up would not lead to them holding more than the maximum allowed mass, max_weight_allowed.
 
-            if weight_carried + c["mass"] <= player.max_weight_allowed:
+            if player.weight_carried + c["mass"] <= player.max_weight_allowed:
                 player.inventory.append(c)
                 remove_from_room.append(c)
 
